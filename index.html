@@ -53,6 +53,7 @@
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             z-index: 1000;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
         .taskbar.hidden {
             transform: translateY(-100%);
@@ -62,32 +63,39 @@
             justify-content: center;
             align-items: center;
             padding: 0.75rem 1rem;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             flex-wrap: wrap;
             gap: 0.5rem;
         }
         .nav-item {
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.75rem;
             background: rgba(249, 115, 22, 0.1);
             color: #ea580c;
             text-decoration: none;
-            font-weight: 500;
-            font-size: 0.875rem;
+            font-weight: 600;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
             cursor: pointer;
             white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
         }
         .nav-item:hover {
             background: rgba(249, 115, 22, 0.2);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+            border-color: rgba(249, 115, 22, 0.3);
         }
         .nav-item.active {
-            background: #f97316;
+            background: linear-gradient(135deg, #f97316, #ea580c);
             color: white;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+            border-color: #f97316;
         }
         .page-section {
             display: none;
@@ -95,47 +103,119 @@
         .page-section.active {
             display: block;
         }
-        body { padding-top: 80px; }
+        body { 
+            padding-top: 90px;
+            line-height: 1.6;
+        }
         
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-            body { padding-top: 120px; }
+        /* Mobile First Responsive Design */
+        @media (max-width: 480px) {
+            body { 
+                padding-top: 140px;
+                font-size: 14px;
+            }
             .taskbar-nav {
-                padding: 0.5rem;
-                gap: 0.25rem;
+                padding: 0.5rem 0.25rem;
+                gap: 0.2rem;
+                flex-wrap: wrap;
             }
             .nav-item {
-                padding: 0.4rem 0.6rem;
-                font-size: 0.75rem;
+                padding: 0.5rem 0.3rem;
+                font-size: 0.7rem;
                 flex: 1;
                 text-align: center;
                 min-width: 0;
+                min-height: 40px;
+                border-radius: 0.5rem;
             }
-            .nav-item span {
-                display: none;
+            .nav-item .hidden {
+                display: none !important;
             }
+            .nav-item .sm\\:hidden {
+                display: inline !important;
+            }
+            h1 { font-size: 1.5rem !important; }
+            h2 { font-size: 1.3rem !important; }
+            h3 { font-size: 1.1rem !important; }
         }
         
-        /* Tablet Responsive Styles */
-        @media (min-width: 769px) and (max-width: 1024px) {
+        /* Mobile Landscape & Small Tablets */
+        @media (min-width: 481px) and (max-width: 768px) {
+            body { 
+                padding-top: 120px;
+                font-size: 15px;
+            }
             .taskbar-nav {
-                padding: 0.6rem 0.8rem;
+                padding: 0.6rem 0.5rem;
+                gap: 0.3rem;
+            }
+            .nav-item {
+                padding: 0.5rem 0.7rem;
+                font-size: 0.8rem;
+                flex: 1;
+                text-align: center;
+                min-height: 42px;
+            }
+            .nav-item .sm\\:inline {
+                display: none;
+            }
+            .nav-item .sm\\:hidden {
+                display: inline;
+            }
+            h1 { font-size: 1.8rem !important; }
+            h2 { font-size: 1.5rem !important; }
+        }
+        
+        /* Tablet Portrait */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            body { padding-top: 100px; }
+            .taskbar-nav {
+                padding: 0.7rem 1rem;
                 gap: 0.4rem;
             }
             .nav-item {
-                padding: 0.45rem 0.8rem;
-                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                min-height: 44px;
             }
         }
         
-        /* Large Screen Optimization */
-        @media (min-width: 1440px) {
+        /* Desktop & Large Screens */
+        @media (min-width: 1025px) {
+            body { padding-top: 90px; }
             .taskbar-nav {
-                gap: 0.75rem;
+                gap: 0.6rem;
+                padding: 0.8rem 1.5rem;
             }
             .nav-item {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
+                padding: 0.7rem 1.4rem;
+                font-size: 0.95rem;
+                min-height: 48px;
+            }
+        }
+        
+        /* Large Desktop Screens */
+        @media (min-width: 1440px) {
+            .taskbar-nav {
+                gap: 0.8rem;
+                padding: 1rem 2rem;
+            }
+            .nav-item {
+                padding: 0.8rem 1.6rem;
+                font-size: 1rem;
+                min-height: 50px;
+            }
+        }
+        
+        /* Ultra-wide Screens */
+        @media (min-width: 1920px) {
+            .taskbar-nav {
+                max-width: 1600px;
+                gap: 1rem;
+            }
+            .nav-item {
+                padding: 0.9rem 1.8rem;
+                font-size: 1.1rem;
             }
         }
         .gradient-bg {
@@ -209,26 +289,86 @@
             height: auto;
         }
         
-        /* Touch-friendly buttons on mobile */
+        /* Touch-friendly elements for all devices */
+        button, .nav-item, a, input, select, textarea {
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+        
+        /* Enhanced mobile touch targets */
         @media (max-width: 768px) {
-            button, .nav-item {
-                min-height: 44px;
-                min-width: 44px;
+            button, .nav-item, a {
+                min-height: 48px;
+                min-width: 48px;
             }
-        }
-        
-        /* Prevent horizontal scroll */
-        body {
-            overflow-x: hidden;
-        }
-        
-        /* Better text readability on mobile */
-        @media (max-width: 768px) {
+            
+            /* Larger tap areas for small elements */
+            .capability-card, .showcase-item, .stats-counter {
+                padding: 1.5rem;
+            }
+            
+            /* Better spacing for mobile */
+            .grid {
+                gap: 1rem;
+            }
+            
+            /* Improved mobile typography */
             h1, h2, h3, h4, h5, h6 {
                 line-height: 1.3;
+                margin-bottom: 1rem;
             }
             p {
-                line-height: 1.6;
+                line-height: 1.7;
+                margin-bottom: 1rem;
+            }
+            
+            /* Mobile-optimized images */
+            img {
+                width: 100%;
+                height: auto;
+                object-fit: cover;
+            }
+        }
+        
+        /* Prevent horizontal scroll and improve performance */
+        body {
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Smooth scrolling for all devices */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Better focus states for accessibility */
+        .nav-item:focus, button:focus, a:focus {
+            outline: 3px solid #f97316;
+            outline-offset: 2px;
+        }
+        
+        /* Tablet-specific optimizations */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid {
+                gap: 1.5rem;
+            }
+            
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            h3 { font-size: 1.5rem; }
+        }
+        
+        /* Desktop optimizations */
+        @media (min-width: 1025px) {
+            .grid {
+                gap: 2rem;
+            }
+            
+            /* Hover effects only on devices that support hover */
+            .capability-card:hover,
+            .showcase-item:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.15);
             }
         }
         .teddy-pattern {
@@ -252,48 +392,77 @@
 
     <!-- Header -->
     <header class="bg-white text-gray-800 print-section border-b border-gray-200">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 text-center sm:text-left">
-                    <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gray-50 rounded-xl flex items-center justify-center shadow-lg border flex-shrink-0">
-                        <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-12 h-12 sm:w-16 sm:h-16 object-contain">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 lg:py-12">
+            <div class="flex flex-col items-center text-center gap-4 sm:gap-6">
+                <!-- Logo and Company Name -->
+                <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl flex items-center justify-center shadow-xl border-2 border-orange-100 flex-shrink-0">
+                        <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain">
                     </div>
-                    <div>
-                        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 text-gray-800">CÔNG TY TNHH THÀNH HẠO</h1>
-                        <p class="text-lg sm:text-xl text-gray-600 mb-1">Hồ Sơ Năng Lực Công Ty</p>
-                        <p class="text-sm sm:text-base text-gray-500">Chuyên sản xuất gấu bông chất lượng cao 🧸</p>
+                    <div class="text-center sm:text-left">
+                        <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 text-gray-800 leading-tight">
+                            CÔNG TY TNHH THÀNH HẠO
+                        </h1>
+                        <div class="w-16 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto sm:mx-0 mb-3 rounded-full"></div>
+                        <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-2 font-medium">
+                            Hồ Sơ Năng Lực Công Ty
+                        </p>
+                        <p class="text-sm sm:text-base md:text-lg text-gray-500 flex items-center justify-center sm:justify-start">
+                            <span class="mr-2">🧸</span>
+                            Chuyên sản xuất gấu bông chất lượng cao
+                        </p>
                     </div>
                 </div>
-
             </div>
             
             <!-- Company Image -->
-            <div class="mt-6 sm:mt-8 text-center">
-                <div class="bg-white p-3 sm:p-4 rounded-xl shadow-lg border inline-block max-w-full">
-                    <img src="https://i.postimg.cc/T1X041pL/Screenshot-. .png" alt="Hình ảnh công ty Thành Hạo" class="max-w-full h-48 sm:h-64 object-cover rounded-lg shadow-sm">
+            <div class="mt-6 sm:mt-8 lg:mt-12 text-center">
+                <div class="bg-gradient-to-br from-white to-gray-50 p-3 sm:p-4 lg:p-6 rounded-2xl shadow-2xl border-2 border-gray-100 inline-block max-w-full">
+                    <img src="https://i.postimg.cc/T1X041pL/Screenshot-. .png" 
+                         alt="Hình ảnh công ty Thành Hạo" 
+                         class="max-w-full h-40 sm:h-56 md:h-64 lg:h-80 xl:h-96 object-cover rounded-xl shadow-lg">
                 </div>
-                <p class="text-gray-600 mt-3 text-xs sm:text-sm">Nhà máy sản xuất gấu bông Thành Hạo</p>
+                <div class="mt-4 sm:mt-6">
+                    <p class="text-gray-600 text-sm sm:text-base lg:text-lg font-medium">
+                        🏭 Nhà máy sản xuất gấu bông Thành Hạo
+                    </p>
+                    <div class="flex justify-center mt-2">
+                        <div class="flex space-x-1">
+                            <span class="w-2 h-2 bg-orange-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-red-400 rounded-full"></span>
+                            <span class="w-2 h-2 bg-yellow-400 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <!-- Home Page -->
         <div id="home-page" class="page-section active">
         <!-- Company Overview -->
-        <section id="company-overview" class="bg-white rounded-xl shadow-lg p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 print-section">
-            <div class="flex items-center mb-4 sm:mb-6">
-                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-3 sm:mr-4 flex-shrink-0">
-                    <span class="text-xl sm:text-2xl">🧸</span>
+        <section id="company-overview" class="bg-white rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl p-4 sm:p-6 lg:p-8 xl:p-10 mb-6 sm:mb-8 lg:mb-10 print-section border border-gray-100">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 lg:mb-8 text-center sm:text-left">
+                <div class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl sm:rounded-2xl flex items-center justify-center mr-0 sm:mr-4 lg:mr-6 flex-shrink-0 mb-3 sm:mb-0 shadow-lg">
+                    <span class="text-2xl sm:text-3xl lg:text-4xl">🧸</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-gray-800">Giới Thiệu Về Công Ty</h2>
-            </div>
-            <div class="section-divider mb-4 sm:mb-6"></div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
                 <div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Thông Tin Cơ Bản</h3>
-                    <div class="space-y-3 sm:space-y-4">
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 mb-2">
+                        Giới Thiệu Về Công Ty
+                    </h2>
+                    <div class="w-12 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto sm:mx-0 rounded-full"></div>
+                </div>
+            </div>
+            <div class="section-divider mb-4 sm:mb-6 lg:mb-8"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
+                <div class="order-1">
+                    <h3 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 text-lg">ℹ️</span>
+                        Thông Tin Cơ Bản
+                    </h3>
+                    <div class="space-y-3 sm:space-y-4 lg:space-y-5">
                         <div class="flex flex-col sm:flex-row">
                             <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Tên công ty:</span>
                             <span class="font-semibold text-sm sm:text-base">CÔNG TY TNHH THÀNH HẠO</span>
@@ -327,56 +496,61 @@
                     </div>
                 </div>
                 
-                <div>
-                    <h3 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Thông Tin Liên Hệ</h3>
+                <div class="order-2">
+                    <h3 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 text-lg">📞</span>
+                        Thông Tin Liên Hệ
+                    </h3>
                     
                     <!-- Working Hours -->
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200 mb-6">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                                <span class="text-2xl">🕐</span>
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl border border-blue-200 mb-6 sm:mb-8 shadow-lg">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 text-center sm:text-left">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mr-0 sm:mr-4 mb-3 sm:mb-0 shadow-md">
+                                <span class="text-2xl sm:text-3xl">🕐</span>
                             </div>
                             <div>
-                                <h4 class="text-lg font-bold text-blue-800">Giờ Làm Việc</h4>
-                                <p class="text-blue-600 text-sm">Thời gian phục vụ khách hàng</p>
+                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-blue-800 mb-1">Giờ Làm Việc</h4>
+                                <p class="text-blue-600 text-sm sm:text-base">Thời gian phục vụ khách hàng</p>
                             </div>
                         </div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
-                            <div class="flex items-center justify-center">
-                                <div class="text-center">
-                                    <p class="text-2xl font-bold text-blue-800 mb-1">7:30 - 16:30</p>
-                                    <p class="text-blue-600 font-medium">Thứ 2 - Thứ 7</p>
-                                    <p class="text-gray-500 text-sm mt-2">Chủ nhật nghỉ</p>
+                        <div class="bg-white p-4 sm:p-6 lg:p-8 rounded-lg sm:rounded-xl shadow-md border border-blue-100">
+                            <div class="text-center">
+                                <p class="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-800 mb-2 sm:mb-3">7:30 - 16:30</p>
+                                <p class="text-blue-600 font-semibold text-base sm:text-lg lg:text-xl mb-2">Thứ 2 - Thứ 7</p>
+                                <div class="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                    <span class="text-gray-500 text-sm sm:text-base">🚫 Chủ nhật nghỉ</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Support Staff -->
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                                <span class="text-2xl">👥</span>
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 sm:p-6 lg:p-8 rounded-xl sm:rounded-2xl border border-green-200 shadow-lg">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-start mb-4 sm:mb-6 text-center sm:text-left">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center mr-0 sm:mr-4 mb-3 sm:mb-0 shadow-md">
+                                <span class="text-2xl sm:text-3xl">👥</span>
                             </div>
                             <div>
-                                <h4 class="text-lg font-bold text-green-800">Nhân Viên Hỗ Trợ</h4>
-                                <p class="text-green-600 text-sm">Đội ngũ tư vấn chuyên nghiệp</p>
+                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">Nhân Viên Hỗ Trợ</h4>
+                                <p class="text-green-600 text-sm sm:text-base">Đội ngũ tư vấn chuyên nghiệp</p>
                             </div>
                         </div>
                         
-                        <div class="space-y-4">
+                        <div class="space-y-4 sm:space-y-6">
                             <!-- Mrs Linh -->
-                            <div class="bg-white p-4 rounded-lg shadow-sm border border-green-100">
-                                <div class="flex items-center">
-                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                        <span class="text-lg">👩‍💻</span>
+                            <div class="bg-white p-4 sm:p-6 rounded-lg sm:rounded-xl shadow-md border border-green-100 hover:shadow-lg transition-all duration-300">
+                                <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left">
+                                    <div class="w-12 h-12 sm:w-14 sm:h-14 bg-blue-100 rounded-full flex items-center justify-center mr-0 sm:mr-4 mb-3 sm:mb-0 flex-shrink-0 shadow-sm">
+                                        <span class="text-xl sm:text-2xl">👩‍💻</span>
                                     </div>
                                     <div class="flex-1">
-                                        <h5 class="font-bold text-gray-800 text-lg">Mrs Linh</h5>
-                                        <p class="text-blue-600 text-sm font-medium mb-2">Trưởng phòng nhân sự</p>
-                                        <div class="flex items-center">
-                                            <span class="text-green-600 mr-2">📱</span>
-                                            <span class="font-bold text-green-800 text-lg">0915.996.358</span>
+                                        <h5 class="font-bold text-gray-800 text-lg sm:text-xl mb-1">Mrs Linh</h5>
+                                        <div class="inline-flex items-center bg-blue-100 px-3 py-1 rounded-full mb-3">
+                                            <span class="text-blue-600 text-sm sm:text-base font-medium">👑 Trưởng phòng nhân sự</span>
+                                        </div>
+                                        <div class="flex items-center justify-center sm:justify-start bg-green-50 p-3 rounded-lg">
+                                            <span class="text-green-600 mr-2 text-lg">📱</span>
+                                            <span class="font-bold text-green-800 text-lg sm:text-xl">0915.996.358</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1475,20 +1649,51 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-6 sm:py-8 print-section">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
-            <div class="flex flex-col sm:flex-row items-center justify-center mb-4 space-y-2 sm:space-y-0">
-                <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-10 h-10 sm:w-12 sm:h-12 sm:mr-3">
-                <span class="text-lg sm:text-xl font-bold">CÔNG TY TNHH THÀNH HẠO</span>
+    <footer class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-8 sm:py-12 lg:py-16 print-section">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center">
+            <!-- Logo and Company Name -->
+            <div class="flex flex-col sm:flex-row items-center justify-center mb-6 sm:mb-8 space-y-3 sm:space-y-0">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 lg:w-18 lg:h-18 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center sm:mr-4 shadow-lg">
+                    <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 object-contain">
+                </div>
+                <div>
+                    <span class="text-xl sm:text-2xl lg:text-3xl font-bold block">CÔNG TY TNHH THÀNH HẠO</span>
+                    <div class="w-16 h-1 bg-white bg-opacity-50 mx-auto sm:mx-0 mt-2 rounded-full"></div>
+                </div>
             </div>
-            <p class="text-blue-100 text-sm sm:text-base">© 2025 Công ty TNHH Thành Hạo. Tất cả quyền được bảo lưu.</p>
-            <p class="text-blue-200 text-xs sm:text-sm mt-2">Chuyên sản xuất gấu bông chất lượng cao - Hồ sơ năng lực cập nhật 07/2025</p>
-            <div class="mt-4 flex justify-center space-x-3 sm:space-x-4 text-xl sm:text-2xl">
-                <span>🧸</span>
-                <span>❤️</span>
-                <span>🌟</span>
-                <span>🎁</span>
-                <span>😊</span>
+            
+            <!-- Copyright and Description -->
+            <div class="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                <p class="text-blue-100 text-sm sm:text-base lg:text-lg font-medium">
+                    © 2025 Công ty TNHH Thành Hạo. Tất cả quyền được bảo lưu.
+                </p>
+                <p class="text-blue-200 text-xs sm:text-sm lg:text-base">
+                    🧸 Chuyên sản xuất gấu bông chất lượng cao - Hồ sơ năng lực cập nhật 07/2025
+                </p>
+                <div class="inline-flex items-center bg-white bg-opacity-10 px-4 py-2 rounded-full">
+                    <span class="text-blue-100 text-sm sm:text-base">📍 Hải Phòng, Việt Nam</span>
+                </div>
+            </div>
+            
+            <!-- Decorative Icons -->
+            <div class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8 text-2xl sm:text-3xl lg:text-4xl mb-4">
+                <span class="hover:scale-110 transition-transform duration-300">🧸</span>
+                <span class="hover:scale-110 transition-transform duration-300">❤️</span>
+                <span class="hover:scale-110 transition-transform duration-300">🌟</span>
+                <span class="hover:scale-110 transition-transform duration-300">🎁</span>
+                <span class="hover:scale-110 transition-transform duration-300">😊</span>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6 text-blue-200 text-sm sm:text-base">
+                <div class="flex items-center">
+                    <span class="mr-2">📱</span>
+                    <span>091096358</span>
+                </div>
+                <div class="flex items-center">
+                    <span class="mr-2">✉️</span>
+                    <span>thanhhao9830@gmail.com</span>
+                </div>
             </div>
         </div>
     </footer>
@@ -1702,5 +1907,5 @@
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'968abb7cd10103db',t:'MTc1NDEwNzg5OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'968ac596758b04e7',t:'MTc1NDEwODMxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
