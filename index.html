@@ -97,6 +97,35 @@
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
             border-color: #f97316;
         }
+        .language-switcher {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+        }
+        .language-switcher:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .language-switcher.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 3px 10px rgba(59, 130, 246, 0.4);
+            border-color: #3b82f6;
+        }
         .page-section {
             display: none;
         }
@@ -133,6 +162,11 @@
             }
             .nav-item .sm\\:hidden {
                 display: inline !important;
+            }
+            .language-switcher {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.7rem;
+                min-height: 32px;
             }
             h1 { font-size: 1.5rem !important; }
             h2 { font-size: 1.3rem !important; }
@@ -374,19 +408,101 @@
         .teddy-pattern {
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fed7aa' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0-11.046 8.954-20 20-20s20 8.954 20 20-8.954 20-20 20-20-8.954-20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
+        
+        /* Language content visibility */
+        .lang-vi { display: block; }
+        .lang-zh { display: none; }
+        
+        body.chinese .lang-vi { display: none; }
+        body.chinese .lang-zh { display: block; }
     </style>
+    <script>
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            
+            // Find and activate the clicked nav item
+            const clickedNav = event.target.closest('.nav-item');
+            if (clickedNav) {
+                clickedNav.classList.add('active');
+            }
+        }
+        
+        // Language switching function
+        function switchLanguage(lang) {
+            const body = document.body;
+            const langButtons = document.querySelectorAll('.language-switcher');
+            
+            // Remove active class from all language buttons
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            
+            if (lang === 'zh') {
+                body.classList.add('chinese');
+                document.getElementById('lang-zh').classList.add('active');
+            } else {
+                body.classList.remove('chinese');
+                document.getElementById('lang-vi').classList.add('active');
+            }
+        }
+        
+        // Auto-hide taskbar on scroll
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', function() {
+            const taskbar = document.getElementById('taskbar');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                taskbar.classList.add('hidden');
+            } else {
+                taskbar.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop;
+        });
+    </script>
 </head>
 <body class="bg-orange-50 teddy-pattern">
     <!-- Navigation Taskbar -->
     <nav class="taskbar" id="taskbar">
         <div class="taskbar-nav">
-            <span class="nav-item active" onclick="showPage('home')">🏢 <span class="hidden sm:inline">Trang Chủ</span><span class="sm:hidden">Chủ</span></span>
-            <span class="nav-item" onclick="showPage('equipment')">🏭 <span class="hidden sm:inline">Thiết Bị</span><span class="sm:hidden">TB</span></span>
-            <span class="nav-item" onclick="showPage('products')">🎁 <span class="hidden sm:inline">Sản Phẩm</span><span class="sm:hidden">SP</span></span>
-            <span class="nav-item" onclick="showPage('commitment')">🤝 <span class="hidden sm:inline">Đối Tác</span><span class="sm:hidden">ĐT</span></span>
-            <span class="nav-item" onclick="showPage('certificates')">📜 <span class="hidden sm:inline">Chứng Từ</span><span class="sm:hidden">CT</span></span>
-            <span class="nav-item" onclick="showPage('why-choose')">💖 <span class="hidden sm:inline">Tại Sao Chọn</span><span class="sm:hidden">TS</span></span>
-            <span class="nav-item" onclick="showPage('team')">👥 <span class="hidden sm:inline">Đội Ngũ</span><span class="sm:hidden">ĐN</span></span>
+            <!-- Language Switcher -->
+            <div class="flex space-x-1 mr-4">
+                <span class="language-switcher active" id="lang-vi" onclick="switchLanguage('vi')">🇻🇳 VI</span>
+                <span class="language-switcher" id="lang-zh" onclick="switchLanguage('zh')">🇨🇳 中文</span>
+            </div>
+            
+            <span class="nav-item active" onclick="showPage('home')">
+                🏢 <span class="hidden sm:inline">Trang Chủ</span><span class="sm:hidden">Chủ</span>
+            </span>
+            <span class="nav-item" onclick="showPage('equipment')">
+                🏭 <span class="hidden sm:inline">Thiết Bị</span><span class="sm:hidden">TB</span>
+            </span>
+            <span class="nav-item" onclick="showPage('products')">
+                🎁 <span class="hidden sm:inline">Sản Phẩm</span><span class="sm:hidden">SP</span>
+            </span>
+            <span class="nav-item" onclick="showPage('commitment')">
+                🤝 <span class="hidden sm:inline">Đối Tác</span><span class="sm:hidden">ĐT</span>
+            </span>
+            <span class="nav-item" onclick="showPage('why-choose')">
+                💖 <span class="hidden sm:inline">Tại Sao</span><span class="sm:hidden">TS</span>
+            </span>
+            <span class="nav-item" onclick="showPage('certificates')">
+                📜 <span class="hidden sm:inline">Chứng Từ</span><span class="sm:hidden">CT</span>
+            </span>
+            <span class="nav-item" onclick="showPage('team')">
+                👥 <span class="hidden sm:inline">Đội Ngũ</span><span class="sm:hidden">ĐN</span>
+            </span>
         </div>
     </nav>
 
@@ -401,15 +517,18 @@
                     </div>
                     <div class="text-center sm:text-left">
                         <h1 class="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 text-gray-800 leading-tight">
-                            CÔNG TY TNHH THÀNH HẠO VIỆT NAM
+                            <span class="lang-vi">CÔNG TY TNHH THÀNH HẠO</span>
+                            <span class="lang-zh">成豪有限责任公司</span>
                         </h1>
                         <div class="w-16 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto sm:mx-0 mb-3 rounded-full"></div>
                         <p class="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 mb-2 font-medium">
-                            Hồ Sơ Năng Lực Công Ty
+                            <span class="lang-vi">Hồ Sơ Năng Lực Công Ty</span>
+                            <span class="lang-zh">公司能力简介</span>
                         </p>
                         <p class="text-sm sm:text-base md:text-lg text-gray-500 flex items-center justify-center sm:justify-start">
                             <span class="mr-2">🧸</span>
-                            Chuyên sản xuất gấu bông chất lượng cao
+                            <span class="lang-vi">Chuyên sản xuất gấu bông chất lượng cao</span>
+                            <span class="lang-zh">专业生产高品质毛绒玩具</span>
                         </p>
                     </div>
                 </div>
@@ -424,7 +543,8 @@
                 </div>
                 <div class="mt-4 sm:mt-6">
                     <p class="text-gray-600 text-sm sm:text-base lg:text-lg font-medium">
-                        🏭 Nhà máy sản xuất gấu bông Thành Hạo
+                        🏭 <span class="lang-vi">Nhà máy sản xuất gấu bông Thành Hạo</span>
+                        <span class="lang-zh">成豪毛绒玩具生产工厂</span>
                     </p>
                     <div class="flex justify-center mt-2">
                         <div class="flex space-x-1">
@@ -449,7 +569,8 @@
                 </div>
                 <div>
                     <h2 class="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-800 mb-2">
-                        Giới Thiệu Về Công Ty
+                        <span class="lang-vi">Giới Thiệu Về Công Ty</span>
+                        <span class="lang-zh">公司简介</span>
                     </h2>
                     <div class="w-12 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto sm:mx-0 rounded-full"></div>
                 </div>
@@ -460,27 +581,42 @@
                 <div class="order-1">
                     <h3 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 flex items-center">
                         <span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 text-lg">ℹ️</span>
-                        Thông Tin Cơ Bản
+                        <span class="lang-vi">Thông Tin Cơ Bản</span>
+                        <span class="lang-zh">基本信息</span>
                     </h3>
                     <div class="space-y-3 sm:space-y-4 lg:space-y-5">
                         <div class="flex flex-col sm:flex-row">
-                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Tên công ty:</span>
-                            <span class="font-semibold text-sm sm:text-base">CÔNG TY TNHH THÀNH HẠO</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-vi">Tên công ty:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-zh">公司名称:</span>
+                            <span class="font-semibold text-sm sm:text-base">
+                                <span class="lang-vi">CÔNG TY TNHH THÀNH HẠO</span>
+                                <span class="lang-zh">成豪有限责任公司</span>
+                            </span>
                         </div>
                         <div class="flex flex-col sm:flex-row">
-                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Lĩnh vực:</span>
-                            <span class="font-semibold text-sm sm:text-base">Sản xuất gấu bông</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-vi">Lĩnh vực:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-zh">业务领域:</span>
+                            <span class="font-semibold text-sm sm:text-base">
+                                <span class="lang-vi">Sản xuất gấu bông</span>
+                                <span class="lang-zh">毛绒玩具生产</span>
+                            </span>
                         </div>
                         <div class="flex flex-col sm:flex-row">
-                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Địa chỉ:</span>
-                            <span class="font-semibold text-sm sm:text-base">Thôn Quan, xã Tứ Kỳ, TP Hải Phòng</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-vi">Địa chỉ:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-zh">地址:</span>
+                            <span class="font-semibold text-sm sm:text-base">
+                                <span class="lang-vi">Thôn Quan, xã Tứ Kỳ, TP Hải Phòng</span>
+                                <span class="lang-zh">越南海防市四岐社官村</span>
+                            </span>
                         </div>
                         <div class="flex flex-col sm:flex-row">
-                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Điện thoại:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-vi">Điện thoại:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-zh">电话:</span>
                             <span class="font-semibold text-sm sm:text-base">091096358</span>
                         </div>
                         <div class="flex flex-col sm:flex-row">
-                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0">Mã số thuế:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-vi">Mã số thuế:</span>
+                            <span class="w-full sm:w-32 text-gray-600 font-medium mb-1 sm:mb-0 lang-zh">税号:</span>
                             <span class="font-semibold text-sm sm:text-base">0801449830</span>
                         </div>
                         <div class="flex flex-col sm:flex-row">
@@ -491,7 +627,12 @@
                     
                     <div class="mt-4 sm:mt-6 p-3 sm:p-4 bg-orange-50 rounded-lg">
                         <p class="text-gray-700 leading-relaxed text-sm sm:text-base">
-                            <strong>Công Ty TNHH Thành Hạo</strong> là một trong những doanh nghiệp hàng đầu tại Việt Nam chuyên sản xuất và cung cấp các loại gấu bông chất lượng cao. Với nhiều năm kinh nghiệm trong ngành, chúng tôi cam kết mang đến cho khách hàng những sản phẩm đáng yêu và an toàn nhất.
+                            <span class="lang-vi">
+                                <strong>Công Ty TNHH Thành Hạo</strong> là một trong những doanh nghiệp hàng đầu tại Việt Nam chuyên sản xuất và cung cấp các loại gấu bông chất lượng cao. Với nhiều năm kinh nghiệm trong ngành, chúng tôi cam kết mang đến cho khách hàng những sản phẩm đáng yêu và an toàn nhất.
+                            </span>
+                            <span class="lang-zh">
+                                <strong>成豪有限责任公司</strong>是越南领先的毛绒玩具生产和供应企业之一。凭借多年的行业经验，我们致力于为客户提供最可爱、最安全的产品。
+                            </span>
                         </p>
                     </div>
                 </div>
@@ -499,7 +640,8 @@
                 <div class="order-2">
                     <h3 class="text-lg sm:text-xl lg:text-2xl font-semibold text-gray-800 mb-4 sm:mb-6 flex items-center">
                         <span class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 text-lg">📞</span>
-                        Thông Tin Liên Hệ
+                        <span class="lang-vi">Thông Tin Liên Hệ</span>
+                        <span class="lang-zh">联系信息</span>
                     </h3>
                     
                     <!-- Working Hours -->
@@ -509,16 +651,28 @@
                                 <span class="text-2xl sm:text-3xl">🕐</span>
                             </div>
                             <div>
-                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-blue-800 mb-1">Giờ Làm Việc</h4>
-                                <p class="text-blue-600 text-sm sm:text-base">Thời gian phục vụ khách hàng</p>
+                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-blue-800 mb-1">
+                                    <span class="lang-vi">Giờ Làm Việc</span>
+                                    <span class="lang-zh">工作时间</span>
+                                </h4>
+                                <p class="text-blue-600 text-sm sm:text-base">
+                                    <span class="lang-vi">Thời gian phục vụ khách hàng</span>
+                                    <span class="lang-zh">客户服务时间</span>
+                                </p>
                             </div>
                         </div>
                         <div class="bg-white p-4 sm:p-6 lg:p-8 rounded-lg sm:rounded-xl shadow-md border border-blue-100">
                             <div class="text-center">
                                 <p class="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-800 mb-2 sm:mb-3">7:30 - 16:30</p>
-                                <p class="text-blue-600 font-semibold text-base sm:text-lg lg:text-xl mb-2">Thứ 2 - Thứ 7</p>
+                                <p class="text-blue-600 font-semibold text-base sm:text-lg lg:text-xl mb-2">
+                                    <span class="lang-vi">Thứ 2 - Thứ 7</span>
+                                    <span class="lang-zh">周一 - 周六</span>
+                                </p>
                                 <div class="inline-flex items-center bg-gray-100 px-3 py-1 rounded-full">
-                                    <span class="text-gray-500 text-sm sm:text-base">🚫 Chủ nhật nghỉ</span>
+                                    <span class="text-gray-500 text-sm sm:text-base">
+                                        🚫 <span class="lang-vi">Chủ nhật nghỉ</span>
+                                        <span class="lang-zh">周日休息</span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -531,8 +685,14 @@
                                 <span class="text-2xl sm:text-3xl">👥</span>
                             </div>
                             <div>
-                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">Nhân Viên Hỗ Trợ</h4>
-                                <p class="text-green-600 text-sm sm:text-base">Đội ngũ tư vấn chuyên nghiệp</p>
+                                <h4 class="text-lg sm:text-xl lg:text-2xl font-bold text-green-800 mb-1">
+                                    <span class="lang-vi">Nhân Viên Hỗ Trợ</span>
+                                    <span class="lang-zh">客服人员</span>
+                                </h4>
+                                <p class="text-green-600 text-sm sm:text-base">
+                                    <span class="lang-vi">Đội ngũ tư vấn chuyên nghiệp</span>
+                                    <span class="lang-zh">专业咨询团队</span>
+                                </p>
                             </div>
                         </div>
                         
@@ -546,7 +706,10 @@
                                     <div class="flex-1">
                                         <h5 class="font-bold text-gray-800 text-lg sm:text-xl mb-1">Mrs Linh</h5>
                                         <div class="inline-flex items-center bg-blue-100 px-3 py-1 rounded-full mb-3">
-                                            <span class="text-blue-600 text-sm sm:text-base font-medium">👑 Trưởng phòng nhân sự</span>
+                                            <span class="text-blue-600 text-sm sm:text-base font-medium">
+                                                👑 <span class="lang-vi">Trưởng phòng nhân sự</span>
+                                                <span class="lang-zh">人事部经理</span>
+                                            </span>
                                         </div>
                                         <div class="flex items-center justify-center sm:justify-start bg-green-50 p-3 rounded-lg">
                                             <span class="text-green-600 mr-2 text-lg">📱</span>
@@ -564,7 +727,10 @@
                                     </div>
                                     <div class="flex-1">
                                         <h5 class="font-bold text-gray-800 text-lg">Miss Mai</h5>
-                                        <p class="text-pink-600 text-sm font-medium mb-2">Hành chính nhân sự</p>
+                                        <p class="text-pink-600 text-sm font-medium mb-2">
+                                            <span class="lang-vi">Hành chính nhân sự</span>
+                                            <span class="lang-zh">人事行政</span>
+                                        </p>
                                         <div class="flex items-center">
                                             <span class="text-green-600 mr-2">📱</span>
                                             <span class="font-bold text-green-800 text-lg">0346.392.238</span>
@@ -581,7 +747,10 @@
                                     </div>
                                     <div class="flex-1">
                                         <h5 class="font-bold text-gray-800 text-lg">Mrs Thùy</h5>
-                                        <p class="text-purple-600 text-sm font-medium mb-2">Hành chính nhân sự</p>
+                                        <p class="text-purple-600 text-sm font-medium mb-2">
+                                            <span class="lang-vi">Hành chính nhân sự</span>
+                                            <span class="lang-zh">人事行政</span>
+                                        </p>
                                         <div class="flex items-center">
                                             <span class="text-green-600 mr-2">📱</span>
                                             <span class="font-bold text-green-800 text-lg">0349.651.904</span>
@@ -594,155 +763,390 @@
                 </div>
             </div>
         </section>
-
-
-
-
         </div>
 
         <!-- Equipment Page -->
         <div id="equipment-page" class="page-section">
-        <!-- Factory Equipment -->
-        <section id="factory-equipment" class="bg-white rounded-xl shadow-lg p-8 mb-8 print-section">
+        <!-- Equipment -->
+        <section id="equipment" class="bg-white rounded-xl shadow-lg p-8 mb-8 print-section">
             <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🏭</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">工厂設備 - Danh Sách Thiết Bị Nhà Máy</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Thiết Bị & Máy Móc</span>
+                    <span class="lang-zh">设备与机械</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-4">
-                    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">1. 激光裁床</h3>
-                                <p class="text-gray-600">Máy cắt vải bằng tia laser</p>
-                            </div>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-bold">10 máy</span>
-                        </div>
+                <div class="capability-card bg-blue-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">✂️</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy Cắt Laser</span>
+                            <span class="lang-zh">激光切割机</span>
+                        </h3>
                     </div>
-
-                    <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">2. 電繡</h3>
-                                <p class="text-gray-600">Máy thêu vi tính</p>
-                            </div>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full font-bold">20 máy</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">3. 平車</h3>
-                                <p class="text-gray-600">Máy may công nghiệp</p>
-                            </div>
-                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-bold">300 máy</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">4. 高車</h3>
-                                <p class="text-gray-600">Máy may trụ cao</p>
-                            </div>
-                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full font-bold">30 máy</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">5. 檢針機</h3>
-                                <p class="text-gray-600">Máy dò kim</p>
-                            </div>
-                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full font-bold">6 máy</span>
-                        </div>
-                    </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Cắt vải chính xác với độ sai số tối thiểu, đảm bảo chất lượng sản phẩm đồng đều.</span>
+                        <span class="lang-zh">精确切割面料，误差最小，确保产品质量均匀。</span>
+                    </p>
                 </div>
 
-                <div class="space-y-4">
-                    <div class="bg-teal-50 p-4 rounded-lg border-l-4 border-teal-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">6. 松棉機</h3>
-                                <p class="text-gray-600">Máy đánh tơi bông</p>
-                            </div>
-                            <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full font-bold">4 máy</span>
-                        </div>
+                <div class="capability-card bg-green-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🧵</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy Thêu Tự Động</span>
+                            <span class="lang-zh">自动刺绣机</span>
+                        </h3>
                     </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Thêu logo, hình ảnh và văn bản với độ chính xác cao và tốc độ nhanh.</span>
+                        <span class="lang-zh">高精度快速刺绣标志、图案和文字。</span>
+                    </p>
+                </div>
 
-                    <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">7. 充棉機</h3>
-                                <p class="text-gray-600">Máy nhồi bông</p>
-                            </div>
-                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full font-bold">12 máy</span>
-                        </div>
+                <div class="capability-card bg-purple-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🪡</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy May Công Nghiệp</span>
+                            <span class="lang-zh">工业缝纫机</span>
+                        </h3>
                     </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Hệ thống máy may hiện đại, đảm bảo đường may chắc chắn và đẹp mắt.</span>
+                        <span class="lang-zh">现代化缝纫系统，确保缝线牢固美观。</span>
+                    </p>
+                </div>
 
-                    <div class="bg-pink-50 p-4 rounded-lg border-l-4 border-pink-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">8. 手工操作檯</h3>
-                                <p class="text-gray-600">Bàn thao tác thủ công</p>
-                            </div>
-                            <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full font-bold">30 máy</span>
-                        </div>
+                <div class="capability-card bg-yellow-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🎯</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy Nhồi Bông</span>
+                            <span class="lang-zh">填充机</span>
+                        </h3>
                     </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Nhồi bông đều và đặc, tạo độ mềm mại và đàn hồi tối ưu cho sản phẩm.</span>
+                        <span class="lang-zh">均匀密实填充，为产品创造最佳柔软度和弹性。</span>
+                    </p>
+                </div>
 
-                    <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">9. 手縫部生產線</h3>
-                                <p class="text-gray-600">Dây chuyền khâu tay</p>
-                            </div>
-                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold">5 dây chuyền</span>
-                        </div>
+                <div class="capability-card bg-red-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🔍</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Thiết Bị Kiểm Tra Chất Lượng</span>
+                            <span class="lang-zh">质量检测设备</span>
+                        </h3>
                     </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Kiểm tra độ bền, an toàn và chất lượng sản phẩm theo tiêu chuẩn quốc tế.</span>
+                        <span class="lang-zh">按国际标准检测产品耐用性、安全性和质量。</span>
+                    </p>
+                </div>
 
-                    <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-gray-500">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <h3 class="font-semibold text-gray-800">10. 包裝生產線</h3>
-                                <p class="text-gray-600">Dây chuyền đóng gói</p>
-                            </div>
-                            <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full font-bold">5 dây chuyền</span>
-                        </div>
+                <div class="capability-card bg-indigo-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">📦</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Dây Chuyền Đóng Gói</span>
+                            <span class="lang-zh">包装生产线</span>
+                        </h3>
                     </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Đóng gói sản phẩm tự động, đảm bảo vệ sinh và bảo quản tốt nhất.</span>
+                        <span class="lang-zh">自动包装产品，确保最佳卫生和保存条件。</span>
+                    </p>
+                </div>
+
+                <div class="capability-card bg-teal-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🎨</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy In Chuyển Nhiệt</span>
+                            <span class="lang-zh">热转印机</span>
+                        </h3>
+                    </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">In hình ảnh và logo lên vải với chất lượng cao, bền màu theo thời gian.</span>
+                        <span class="lang-zh">高质量印制图案和标志到面料上，颜色持久不褪。</span>
+                    </p>
+                </div>
+
+                <div class="capability-card bg-pink-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">⚙️</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy Ép Định Hình</span>
+                            <span class="lang-zh">成型压机</span>
+                        </h3>
+                    </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Tạo hình dáng chính xác cho các bộ phận của gấu bông, đảm bảo tính thẩm mỹ.</span>
+                        <span class="lang-zh">精确塑造毛绒玩具各部分形状，确保美观性。</span>
+                    </p>
+                </div>
+
+                <div class="capability-card bg-orange-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🧪</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Phòng Lab Kiểm Nghiệm</span>
+                            <span class="lang-zh">检测实验室</span>
+                        </h3>
+                    </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Kiểm nghiệm nguyên liệu và sản phẩm theo tiêu chuẩn an toàn quốc tế.</span>
+                        <span class="lang-zh">按国际安全标准检测原材料和产品。</span>
+                    </p>
+                </div>
+
+                <div class="capability-card bg-cyan-50 p-6 rounded-lg">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-4">🏷️</span>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Máy Gắn Nhãn Tự Động</span>
+                            <span class="lang-zh">自动贴标机</span>
+                        </h3>
+                    </div>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Gắn nhãn mác, thông tin sản phẩm một cách chính xác và nhanh chóng.</span>
+                        <span class="lang-zh">精确快速地贴附标签和产品信息。</span>
+                    </p>
                 </div>
             </div>
-
-            <div class="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                <div class="text-center">
-                    <span class="text-3xl mb-2 block">⚙️</span>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Tổng Cộng Thiết Bị</h3>
-                    <p class="text-gray-600">Nhà máy được trang bị đầy đủ các thiết bị hiện đại, đảm bảo năng suất cao và chất lượng sản phẩm tốt nhất</p>
+            
+            <!-- Detailed Equipment List -->
+            <div class="mt-8 bg-gradient-to-r from-gray-50 to-blue-50 p-8 rounded-xl border border-gray-200">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <span class="text-2xl">📋</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">
+                        <span class="lang-vi">Danh Sách Thiết Bị Nhà Máy</span>
+                        <span class="lang-zh">工厂设备清单</span>
+                    </h3>
                 </div>
+                <div class="section-divider mb-6"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Equipment Item 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🔥</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy cắt vải bằng tia laser</span>
+                                        <span class="lang-zh">激光裁床</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">10 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🧵</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy thêu vi tính</span>
+                                        <span class="lang-zh">電繡</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">20 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🪡</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy may công nghiệp</span>
+                                        <span class="lang-zh">平車</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-bold">300 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 4 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">⚙️</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy may trụ cao</span>
+                                        <span class="lang-zh">高車</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm font-bold">30 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 5 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🔍</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy dò kim</span>
+                                        <span class="lang-zh">檢針機</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-bold">6 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 6 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🌪️</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy đánh tơi bông</span>
+                                        <span class="lang-zh">松棉機</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-bold">4 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 7 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🎯</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Máy nhồi bông</span>
+                                        <span class="lang-zh">充棉機</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold">12 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 8 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">🛠️</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Bàn thao tác thủ công</span>
+                                        <span class="lang-zh">手工操作檯</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-bold">30 máy</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 9 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">✋</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Dây chuyền khâu tay</span>
+                                        <span class="lang-zh">手縫部生產線</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-bold">5 dây chuyền</span>
+                        </div>
+                    </div>
+
+                    <!-- Equipment Item 10 -->
+                    <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-300">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <span class="text-2xl mr-3">📦</span>
+                                <div>
+                                    <h4 class="font-bold text-gray-800">
+                                        <span class="lang-vi">Dây chuyền đóng gói</span>
+                                        <span class="lang-zh">包裝生產線</span>
+                                    </h4>
+                                </div>
+                            </div>
+                            <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm font-bold">5 dây chuyền</span>
+                        </div>
+                    </div>
+                </div>
+                
+
             </div>
-        </section>
-
-
-
-            <!-- Summary Box -->
-            <div class="mt-8 bg-gradient-to-r from-pink-50 to-rose-50 p-8 rounded-xl border border-pink-200">
+            
+            <div class="mt-8 bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border border-orange-200">
                 <div class="text-center">
-                    <span class="text-4xl mb-4 block">💝</span>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Lựa Chọn Hoàn Hảo Cho Bạn</h3>
-                    <p class="text-gray-700 text-lg max-w-2xl mx-auto">
-                        Với tất cả những ưu điểm vượt trội này, <strong>Thành Hạo</strong> tự tin là đối tác đáng tin cậy 
-                        cho mọi nhu cầu về gấu bông chất lượng cao của bạn.
+                    <span class="text-3xl mb-2 block">🏭</span>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                        <span class="lang-vi">Công Nghệ Hiện Đại</span>
+                        <span class="lang-zh">现代化技术</span>
+                    </h3>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Đầu tư thiết bị máy móc hiện đại nhất để đảm bảo chất lượng sản phẩm và năng suất cao</span>
+                        <span class="lang-zh">投资最先进的设备机械，确保产品质量和高产能</span>
                     </p>
                 </div>
             </div>
         </section>
 
-
+        <!-- Thank You & Commitment for Equipment Page -->
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-blue-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">🏭</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Công Nghệ Hiện Đại</span>
+                    <span class="lang-zh">现代技术承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-blue-400 to-indigo-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        <strong>Thành Hạo</strong> đầu tư mạnh mẽ vào công nghệ và thiết bị hiện đại nhất 
+                        để đảm bảo mỗi sản phẩm gấu bông đều đạt tiêu chuẩn quốc tế cao nhất. 
+                        Chúng tôi tự hào về năng lực sản xuất vượt trội.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>大力投资最先进的技术和设备，
+                        确保每个毛绒玩具产品都达到最高的国际标准。
+                        我们为卓越的生产能力感到自豪。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-blue-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">⚙️</span>
+                    <span class="font-semibold text-blue-800">
+                        <span class="lang-vi">Công nghệ tiên tiến - Chất lượng vượt trội</span>
+                        <span class="lang-zh">先进技术 - 卓越品质</span>
+                    </span>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- Products Page -->
@@ -753,7 +1157,10 @@
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🎁</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Sản Phẩm Chính</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Sản Phẩm Chính</span>
+                    <span class="lang-zh">主要产品</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -761,10 +1168,19 @@
                 <div class="showcase-item">
                     <div class="bg-blue-50 p-6 rounded-lg">
                         <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-semibold text-gray-800">Gấu Bông Truyền Thống</h3>
-                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">Bán chạy</span>
+                            <h3 class="text-xl font-semibold text-gray-800">
+                                <span class="lang-vi">Gấu Bông Truyền Thống</span>
+                                <span class="lang-zh">传统毛绒玩具</span>
+                            </h3>
+                            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <span class="lang-vi">Bán chạy</span>
+                                <span class="lang-zh">热销</span>
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-3">Các sản phẩm gấu bông mềm mại, thích hợp cho mọi lứa tuổi. Được làm từ chất liệu cao cấp, an toàn cho trẻ em và người lớn.</p>
+                        <p class="text-gray-600 mb-3">
+                            <span class="lang-vi">Các sản phẩm gấu bông mềm mại, thích hợp cho mọi lứa tuổi. Được làm từ chất liệu cao cấp, an toàn cho trẻ em và người lớn.</span>
+                            <span class="lang-zh">柔软的毛绒玩具产品，适合所有年龄段。采用高级材料制作，对儿童和成人都安全。</span>
+                        </p>
                         
                         <!-- Product Image -->
                         <div class="mb-4">
@@ -774,9 +1190,18 @@
                         </div>
                         
                         <div class="flex flex-wrap gap-2">
-                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">Chất liệu mềm mại</span>
-                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">An toàn</span>
-                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">Đa dạng kích thước</span>
+                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Chất liệu mềm mại</span>
+                                <span class="lang-zh">柔软材质</span>
+                            </span>
+                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">An toàn</span>
+                                <span class="lang-zh">安全</span>
+                            </span>
+                            <span class="bg-blue-200 text-blue-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Đa dạng kích thước</span>
+                                <span class="lang-zh">多种尺寸</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -784,10 +1209,19 @@
                 <div class="showcase-item">
                     <div class="bg-green-50 p-6 rounded-lg">
                         <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-semibold text-gray-800">Gấu Bông Đặc Biệt</h3>
-                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Theo yêu cầu</span>
+                            <h3 class="text-xl font-semibold text-gray-800">
+                                <span class="lang-vi">Gấu Bông Đặc Biệt</span>
+                                <span class="lang-zh">定制毛绒玩具</span>
+                            </h3>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <span class="lang-vi">Theo yêu cầu</span>
+                                <span class="lang-zh">定制</span>
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-3">Gấu bông theo yêu cầu, thiết kế riêng cho các sự kiện hoặc quà tặng đặc biệt. Có thể in logo, thêu tên theo ý muốn.</p>
+                        <p class="text-gray-600 mb-3">
+                            <span class="lang-vi">Gấu bông theo yêu cầu, thiết kế riêng cho các sự kiện hoặc quà tặng đặc biệt. Có thể in logo, thêu tên theo ý muốn.</span>
+                            <span class="lang-zh">按需定制的毛绒玩具，为特殊活动或礼品专门设计。可按要求印制标志、刺绣名字。</span>
+                        </p>
                         
                         <!-- Product Image -->
                         <div class="mb-4">
@@ -797,9 +1231,18 @@
                         </div>
                         
                         <div class="flex flex-wrap gap-2">
-                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Thiết kế riêng</span>
-                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">In logo</span>
-                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Quà tặng</span>
+                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Thiết kế riêng</span>
+                                <span class="lang-zh">专属设计</span>
+                            </span>
+                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">In logo</span>
+                                <span class="lang-zh">印制标志</span>
+                            </span>
+                            <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Quà tặng</span>
+                                <span class="lang-zh">礼品</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -807,10 +1250,19 @@
                 <div class="showcase-item">
                     <div class="bg-purple-50 p-6 rounded-lg">
                         <div class="flex justify-between items-start mb-3">
-                            <h3 class="text-xl font-semibold text-gray-800">Gấu Bông Nhân Vật</h3>
-                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">Độc quyền</span>
+                            <h3 class="text-xl font-semibold text-gray-800">
+                                <span class="lang-vi">Gấu Bông Nhân Vật</span>
+                                <span class="lang-zh">卡通角色玩具</span>
+                            </h3>
+                            <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
+                                <span class="lang-vi">Độc quyền</span>
+                                <span class="lang-zh">独家</span>
+                            </span>
                         </div>
-                        <p class="text-gray-600 mb-3">Gấu bông theo hình dáng các nhân vật hoạt hình nổi tiếng, được thiết kế tỉ mỉ và chân thực, thu hút mọi lứa tuổi.</p>
+                        <p class="text-gray-600 mb-3">
+                            <span class="lang-vi">Gấu bông theo hình dáng các nhân vật hoạt hình nổi tiếng, được thiết kế tỉ mỉ và chân thực, thu hút mọi lứa tuổi.</span>
+                            <span class="lang-zh">以著名卡通角色形象制作的毛绒玩具，设计精细逼真，吸引所有年龄段。</span>
+                        </p>
                         
                         <!-- Product Images -->
                         <div class="grid grid-cols-2 gap-4 mb-4">
@@ -823,14 +1275,55 @@
                         </div>
                         
                         <div class="flex flex-wrap gap-2">
-                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">Nhân vật hoạt hình</span>
-                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">Thiết kế chân thực</span>
-                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">Độc đáo</span>
+                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Nhân vật hoạt hình</span>
+                                <span class="lang-zh">卡通角色</span>
+                            </span>
+                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Thiết kế chân thực</span>
+                                <span class="lang-zh">逼真设计</span>
+                            </span>
+                            <span class="bg-purple-200 text-purple-800 px-2 py-1 rounded text-sm">
+                                <span class="lang-vi">Độc đáo</span>
+                                <span class="lang-zh">独特</span>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Thank You & Commitment for Products Page -->
+        <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-purple-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">🎁</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Sản Phẩm Chất Lượng</span>
+                    <span class="lang-zh">优质产品承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-purple-400 to-pink-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        Mỗi sản phẩm gấu bông của <strong>Thành Hạo</strong> đều được tạo ra với tình yêu và sự tỉ mỉ. 
+                        Chúng tôi cam kết mang đến những người bạn đáng yêu, an toàn và bền đẹp 
+                        cho mọi gia đình trên khắp thế giới.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>的每个毛绒玩具产品都充满爱心和精心制作。
+                        我们承诺为世界各地的家庭带来可爱、安全、耐用的伙伴。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-purple-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">🧸</span>
+                    <span class="font-semibold text-purple-800">
+                        <span class="lang-vi">Sản phẩm đáng yêu - Niềm vui trọn vẹn</span>
+                        <span class="lang-zh">可爱产品 - 完美快乐</span>
+                    </span>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- Partners & Commitment Page -->
@@ -841,12 +1334,18 @@
                 <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🤝</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Các Đối Tác Của Chúng Tôi</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Các Đối Tác Của Chúng Tôi</span>
+                    <span class="lang-zh">我们的合作伙伴</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
             <div class="text-center mb-8">
-                <p class="text-gray-600 text-lg">Chúng tôi tự hào hợp tác với các thương hiệu hàng đầu thế giới</p>
+                <p class="text-gray-600 text-lg">
+                    <span class="lang-vi">Chúng tôi tự hào hợp tác với các thương hiệu hàng đầu thế giới</span>
+                    <span class="lang-zh">我们自豪地与世界领先品牌合作</span>
+                </p>
             </div>
             
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
@@ -878,8 +1377,14 @@
             <div class="mt-8 bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-lg border border-indigo-200">
                 <div class="text-center">
                     <span class="text-3xl mb-2 block">🌟</span>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Uy Tín Quốc Tế</h3>
-                    <p class="text-gray-600">Được tin tưởng bởi các thương hiệu hàng đầu thế giới trong việc sản xuất gấu bông chất lượng cao</p>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">
+                        <span class="lang-vi">Uy Tín Quốc Tế</span>
+                        <span class="lang-zh">国际声誉</span>
+                    </h3>
+                    <p class="text-gray-600">
+                        <span class="lang-vi">Được tin tưởng bởi các thương hiệu hàng đầu thế giới trong việc sản xuất gấu bông chất lượng cao</span>
+                        <span class="lang-zh">受到世界领先品牌信赖，生产高品质毛绒玩具</span>
+                    </p>
                 </div>
             </div>
         </section>
@@ -890,7 +1395,10 @@
                 <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🤝</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Cam Kết Của Chúng Tôi</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Cam Kết Của Chúng Tôi</span>
+                    <span class="lang-zh">我们的承诺</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -898,36 +1406,93 @@
                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-lg border border-green-200">
                     <div class="flex items-center mb-4">
                         <span class="text-3xl mr-4">🌱</span>
-                        <h3 class="text-xl font-semibold text-gray-800">Thân Thiện Môi Trường</h3>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Thân Thiện Môi Trường</span>
+                            <span class="lang-zh">环保友好</span>
+                        </h3>
                     </div>
-                    <p class="text-gray-700">Sử dụng các nguyên liệu an toàn, thân thiện với môi trường và tuân thủ tất cả các quy định về chất lượng sản phẩm.</p>
+                    <p class="text-gray-700">
+                        <span class="lang-vi">Sử dụng các nguyên liệu an toàn, thân thiện với môi trường và tuân thủ tất cả các quy định về chất lượng sản phẩm.</span>
+                        <span class="lang-zh">使用安全、环保的原材料，遵守所有产品质量规定。</span>
+                    </p>
                 </div>
 
                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
                     <div class="flex items-center mb-4">
                         <span class="text-3xl mr-4">🛡️</span>
-                        <h3 class="text-xl font-semibold text-gray-800">An Toàn Tuyệt Đối</h3>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">An Toàn Tuyệt Đối</span>
+                            <span class="lang-zh">绝对安全</span>
+                        </h3>
                     </div>
-                    <p class="text-gray-700">Tất cả sản phẩm đều được kiểm tra nghiêm ngặt, đảm bảo an toàn cho trẻ em và không gây dị ứng cho người sử dụng.</p>
+                    <p class="text-gray-700">
+                        <span class="lang-vi">Tất cả sản phẩm đều được kiểm tra nghiêm ngặt, đảm bảo an toàn cho trẻ em và không gây dị ứng cho người sử dụng.</span>
+                        <span class="lang-zh">所有产品都经过严格检测，确保儿童安全，不会引起使用者过敏。</span>
+                    </p>
                 </div>
 
                 <div class="bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-lg border border-orange-200">
                     <div class="flex items-center mb-4">
                         <span class="text-3xl mr-4">⚡</span>
-                        <h3 class="text-xl font-semibold text-gray-800">Dịch Vụ Chuyên Nghiệp</h3>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Dịch Vụ Chuyên Nghiệp</span>
+                            <span class="lang-zh">专业服务</span>
+                        </h3>
                     </div>
-                    <p class="text-gray-700">Luôn sẵn sàng hợp tác và đáp ứng nhu cầu của đối tác và khách hàng với dịch vụ chuyên nghiệp và tận tâm.</p>
+                    <p class="text-gray-700">
+                        <span class="lang-vi">Luôn sẵn sàng hợp tác và đáp ứng nhu cầu của đối tác và khách hàng với dịch vụ chuyên nghiệp và tận tâm.</span>
+                        <span class="lang-zh">始终准备合作，以专业和用心的服务满足合作伙伴和客户的需求。</span>
+                    </p>
                 </div>
 
                 <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
                     <div class="flex items-center mb-4">
                         <span class="text-3xl mr-4">💝</span>
-                        <h3 class="text-xl font-semibold text-gray-800">Bảo Hành Uy Tín</h3>
+                        <h3 class="text-xl font-semibold text-gray-800">
+                            <span class="lang-vi">Bảo Hành Uy Tín</span>
+                            <span class="lang-zh">信誉保证</span>
+                        </h3>
                     </div>
-                    <p class="text-gray-700">Cam kết bảo hành sản phẩm và hỗ trợ khách hàng trong suốt quá trình sử dụng với chính sách hậu mãi tốt nhất.</p>
+                    <p class="text-gray-700">
+                        <span class="lang-vi">Cam kết bảo hành sản phẩm và hỗ trợ khách hàng trong suốt quá trình sử dụng với chính sách hậu mãi tốt nhất.</span>
+                        <span class="lang-zh">承诺产品保修，在整个使用过程中为客户提供支持，提供最佳的售后政策。</span>
+                    </p>
                 </div>
             </div>
         </section>
+
+        <!-- Thank You & Commitment for Partners Page -->
+        <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-green-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">🤝</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Đối Tác Tin Cậy</span>
+                    <span class="lang-zh">可信合作伙伴承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-green-400 to-emerald-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        <strong>Thành Hạo</strong> tự hào được tin tưởng bởi các thương hiệu hàng đầu thế giới. 
+                        Chúng tôi cam kết duy trì mối quan hệ đối tác lâu dài, 
+                        cung cấp dịch vụ chuyên nghiệp và sản phẩm chất lượng cao.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>自豪地受到世界领先品牌的信赖。
+                        我们承诺维持长期合作关系，
+                        提供专业服务和高品质产品。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-green-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">🌟</span>
+                    <span class="font-semibold text-green-800">
+                        <span class="lang-vi">Đối tác tin cậy - Hợp tác bền vững</span>
+                        <span class="lang-zh">可信伙伴 - 可持续合作</span>
+                    </span>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- Why Choose Us Page -->
@@ -938,7 +1503,10 @@
                 <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🎯</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Sứ Mệnh & Tầm Nhìn</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Sứ Mệnh & Tầm Nhìn</span>
+                    <span class="lang-zh">使命与愿景</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -948,17 +1516,29 @@
                         <div class="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-3xl">🎯</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-orange-800 mb-4">Sứ Mệnh</h3>
+                        <h3 class="text-2xl font-bold text-orange-800 mb-4">
+                            <span class="lang-vi">Sứ Mệnh</span>
+                            <span class="lang-zh">使命</span>
+                        </h3>
                         <div class="w-16 h-1 bg-orange-400 mx-auto mb-6 rounded-full"></div>
                     </div>
                     <p class="text-gray-700 text-lg leading-relaxed text-center">
-                        Mang đến niềm vui và sự ấm áp cho mọi người thông qua những sản phẩm gấu bông sáng tạo và chất lượng. 
-                        Chúng tôi luôn nỗ lực không ngừng để cải tiến và phát triển sản phẩm, đáp ứng nhu cầu đa dạng của khách hàng.
+                        <span class="lang-vi">
+                            Mang đến niềm vui và sự ấm áp cho mọi người thông qua những sản phẩm gấu bông sáng tạo và chất lượng. 
+                            Chúng tôi luôn nỗ lực không ngừng để cải tiến và phát triển sản phẩm, đáp ứng nhu cầu đa dạng của khách hàng.
+                        </span>
+                        <span class="lang-zh">
+                            通过创新和高品质的毛绒玩具产品为每个人带来快乐和温暖。
+                            我们不断努力改进和开发产品，满足客户的多样化需求。
+                        </span>
                     </p>
                     <div class="mt-6 text-center">
                         <div class="inline-flex items-center space-x-2 bg-orange-100 px-4 py-2 rounded-full">
                             <span class="text-2xl">🧸</span>
-                            <span class="font-semibold text-orange-800">Niềm vui cho mọi nhà</span>
+                            <span class="font-semibold text-orange-800">
+                                <span class="lang-vi">Niềm vui cho mọi nhà</span>
+                                <span class="lang-zh">为每个家庭带来快乐</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -968,17 +1548,29 @@
                         <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-3xl">🌟</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-blue-800 mb-4">Tầm Nhìn</h3>
+                        <h3 class="text-2xl font-bold text-blue-800 mb-4">
+                            <span class="lang-vi">Tầm Nhìn</span>
+                            <span class="lang-zh">愿景</span>
+                        </h3>
                         <div class="w-16 h-1 bg-blue-400 mx-auto mb-6 rounded-full"></div>
                     </div>
                     <p class="text-gray-700 text-lg leading-relaxed text-center">
-                        Trở thành thương hiệu gấu bông hàng đầu tại Việt Nam và mở rộng thị trường ra quốc tế, 
-                        mang sản phẩm gấu bông Việt đến khắp thế giới.
+                        <span class="lang-vi">
+                            Trở thành thương hiệu gấu bông hàng đầu tại Việt Nam và mở rộng thị trường ra quốc tế, 
+                            mang sản phẩm gấu bông Việt đến khắp thế giới.
+                        </span>
+                        <span class="lang-zh">
+                            成为越南领先的毛绒玩具品牌，并拓展国际市场，
+                            将越南毛绒玩具产品带到世界各地。
+                        </span>
                     </p>
                     <div class="mt-6 text-center">
                         <div class="inline-flex items-center space-x-2 bg-blue-100 px-4 py-2 rounded-full">
                             <span class="text-2xl">🌍</span>
-                            <span class="font-semibold text-blue-800">Vươn tầm quốc tế</span>
+                            <span class="font-semibold text-blue-800">
+                                <span class="lang-vi">Vươn tầm quốc tế</span>
+                                <span class="lang-zh">走向国际</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -988,23 +1580,38 @@
             <div class="mt-8 bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-xl border border-purple-200">
                 <div class="text-center">
                     <span class="text-4xl mb-4 block">💝</span>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Giá Trị Cốt Lõi</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                        <span class="lang-vi">Giá Trị Cốt Lõi</span>
+                        <span class="lang-zh">核心价值</span>
+                    </h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                         <div class="text-center">
                             <span class="text-3xl block mb-2">🎯</span>
-                            <span class="font-semibold text-purple-800">Chất Lượng</span>
+                            <span class="font-semibold text-purple-800">
+                                <span class="lang-vi">Chất Lượng</span>
+                                <span class="lang-zh">质量</span>
+                            </span>
                         </div>
                         <div class="text-center">
                             <span class="text-3xl block mb-2">🤝</span>
-                            <span class="font-semibold text-purple-800">Uy Tín</span>
+                            <span class="font-semibold text-purple-800">
+                                <span class="lang-vi">Uy Tín</span>
+                                <span class="lang-zh">信誉</span>
+                            </span>
                         </div>
                         <div class="text-center">
                             <span class="text-3xl block mb-2">💡</span>
-                            <span class="font-semibold text-purple-800">Sáng Tạo</span>
+                            <span class="font-semibold text-purple-800">
+                                <span class="lang-vi">Sáng Tạo</span>
+                                <span class="lang-zh">创新</span>
+                            </span>
                         </div>
                         <div class="text-center">
                             <span class="text-3xl block mb-2">❤️</span>
-                            <span class="font-semibold text-purple-800">Tận Tâm</span>
+                            <span class="font-semibold text-purple-800">
+                                <span class="lang-vi">Tận Tâm</span>
+                                <span class="lang-zh">用心</span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -1017,7 +1624,10 @@
                 <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">💖</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Tại Sao Nên Chọn Chúng Tôi?</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Tại Sao Nên Chọn Chúng Tôi?</span>
+                    <span class="lang-zh">为什么选择我们？</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -1029,8 +1639,14 @@
                             <span class="text-2xl">🧸</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Chất lượng vượt trội</h3>
-                            <p class="text-gray-700 leading-relaxed">Mỗi chú gấu bông đều được sản xuất từ nguyên liệu cao cấp, mềm mại, an toàn tuyệt đối cho trẻ nhỏ và thân thiện với môi trường.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Chất lượng vượt trội</span>
+                                <span class="lang-zh">卓越品质</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Mỗi chú gấu bông đều được sản xuất từ nguyên liệu cao cấp, mềm mại, an toàn tuyệt đối cho trẻ nhỏ và thân thiện với môi trường.</span>
+                                <span class="lang-zh">每个毛绒玩具都采用高级材料制作，柔软舒适，对儿童绝对安全，环保友好。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1042,8 +1658,14 @@
                             <span class="text-2xl">🎨</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Thiết kế độc quyền & sáng tạo</h3>
-                            <p class="text-gray-700 leading-relaxed">Chúng tôi không chỉ tạo ra gấu bông – chúng tôi tạo ra nhân vật mang cảm xúc. Mỗi sản phẩm đều có câu chuyện riêng, giúp kết nối với người dùng ở mọi lứa tuổi.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Thiết kế độc quyền & sáng tạo</span>
+                                <span class="lang-zh">独家创新设计</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Chúng tôi không chỉ tạo ra gấu bông – chúng tôi tạo ra nhân vật mang cảm xúc. Mỗi sản phẩm đều có câu chuyện riêng, giúp kết nối với người dùng ở mọi lứa tuổi.</span>
+                                <span class="lang-zh">我们不仅制作毛绒玩具——我们创造有情感的角色。每个产品都有自己的故事，与各个年龄段的用户建立联系。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1055,8 +1677,14 @@
                             <span class="text-2xl">🏭</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Quy trình sản xuất hiện đại</h3>
-                            <p class="text-gray-700 leading-relaxed">Áp dụng công nghệ tiên tiến và kiểm định nghiêm ngặt để đảm bảo từng sản phẩm đều đạt chuẩn quốc tế.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Quy trình sản xuất hiện đại</span>
+                                <span class="lang-zh">现代化生产流程</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Áp dụng công nghệ tiên tiến và kiểm định nghiêm ngặt để đảm bảo từng sản phẩm đều đạt chuẩn quốc tế.</span>
+                                <span class="lang-zh">采用先进技术和严格检测，确保每个产品都达到国际标准。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1068,8 +1696,14 @@
                             <span class="text-2xl">🌱</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Cam kết bền vững</h3>
-                            <p class="text-gray-700 leading-relaxed">Chúng tôi hướng đến sản xuất xanh, giảm thiểu rác thải và sử dụng vật liệu tái chế để bảo vệ hành tinh cho thế hệ mai sau.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Cam kết bền vững</span>
+                                <span class="lang-zh">可持续发展承诺</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Chúng tôi hướng đến sản xuất xanh, giảm thiểu rác thải và sử dụng vật liệu tái chế để bảo vệ hành tinh cho thế hệ mai sau.</span>
+                                <span class="lang-zh">我们致力于绿色生产，减少废物，使用可回收材料，为后代保护地球。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1081,8 +1715,14 @@
                             <span class="text-2xl">🤝</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Dịch vụ tận tâm</h3>
-                            <p class="text-gray-700 leading-relaxed">Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ, lắng nghe và đồng hành cùng bạn từ khâu đặt hàng đến sau bán hàng.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Dịch vụ tận tâm</span>
+                                <span class="lang-zh">贴心服务</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ, lắng nghe và đồng hành cùng bạn từ khâu đặt hàng đến sau bán hàng.</span>
+                                <span class="lang-zh">客户服务团队随时准备支持、倾听并陪伴您从下单到售后的全过程。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1094,8 +1734,14 @@
                             <span class="text-2xl">💰</span>
                         </div>
                         <div>
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">Giá cả hợp lý cạnh tranh</h3>
-                            <p class="text-gray-700 leading-relaxed">Đảm bảo sự hài lòng của mọi khách hàng với mức giá phù hợp và chất lượng vượt trội.</p>
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                <span class="lang-vi">Giá cả hợp lý cạnh tranh</span>
+                                <span class="lang-zh">合理竞争价格</span>
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">
+                                <span class="lang-vi">Đảm bảo sự hài lòng của mọi khách hàng với mức giá phù hợp và chất lượng vượt trội.</span>
+                                <span class="lang-zh">以合适的价格和卓越的质量确保每位客户的满意。</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -1105,10 +1751,18 @@
             <div class="mt-8 bg-gradient-to-r from-pink-50 to-rose-50 p-8 rounded-xl border border-pink-200">
                 <div class="text-center">
                     <span class="text-4xl mb-4 block">💝</span>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Lựa Chọn Hoàn Hảo Cho Bạn</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                        <span class="lang-vi">Lựa Chọn Hoàn Hảo Cho Bạn</span>
+                        <span class="lang-zh">您的完美选择</span>
+                    </h3>
                     <p class="text-gray-700 text-lg max-w-2xl mx-auto">
-                        Với tất cả những ưu điểm vượt trội này, <strong>Thành Hạo</strong> tự tin là đối tác đáng tin cậy 
-                        cho mọi nhu cầu về gấu bông chất lượng cao của bạn.
+                        <span class="lang-vi">
+                            Với tất cả những ưu điểm vượt trội này, <strong>Thành Hạo</strong> tự tin là đối tác đáng tin cậy 
+                            cho mọi nhu cầu về gấu bông chất lượng cao của bạn.
+                        </span>
+                        <span class="lang-zh">
+                            凭借所有这些卓越优势，<strong>成豪</strong>自信成为您高品质毛绒玩具需求的可靠合作伙伴。
+                        </span>
                     </p>
                 </div>
             </div>
@@ -1120,7 +1774,10 @@
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">🏆</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Lợi Thế Cạnh Tranh</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Lợi Thế Cạnh Tranh</span>
+                    <span class="lang-zh">竞争优势</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -1130,8 +1787,14 @@
                         <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">🌍</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Đối Tác Quốc Tế</h3>
-                        <p class="text-gray-600 text-sm">Hợp tác với Walmart, Disney, Pop Mart và nhiều thương hiệu lớn</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Đối Tác Quốc Tế</span>
+                            <span class="lang-zh">国际合作伙伴</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Hợp tác với Walmart, Disney, Pop Mart và nhiều thương hiệu lớn</span>
+                            <span class="lang-zh">与沃尔玛、迪士尼、泡泡玛特等大品牌合作</span>
+                        </p>
                     </div>
                 </div>
 
@@ -1140,8 +1803,14 @@
                         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">⚡</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Giao Hàng Nhanh</h3>
-                        <p class="text-gray-600 text-sm">Quy trình sản xuất tối ưu, đảm bảo thời gian giao hàng đúng hẹn</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Giao Hàng Nhanh</span>
+                            <span class="lang-zh">快速交货</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Quy trình sản xuất tối ưu, đảm bảo thời gian giao hàng đúng hẹn</span>
+                            <span class="lang-zh">优化生产流程，确保按时交货</span>
+                        </p>
                     </div>
                 </div>
 
@@ -1150,8 +1819,14 @@
                         <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">🔧</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Tùy Chỉnh Linh Hoạt</h3>
-                        <p class="text-gray-600 text-sm">Đáp ứng mọi yêu cầu thiết kế và sản xuất theo đặc tả riêng</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Tùy Chỉnh Linh Hoạt</span>
+                            <span class="lang-zh">灵活定制</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Đáp ứng mọi yêu cầu thiết kế và sản xuất theo đặc tả riêng</span>
+                            <span class="lang-zh">满足所有设计要求和定制生产规格</span>
+                        </p>
                     </div>
                 </div>
 
@@ -1160,8 +1835,14 @@
                         <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">🛡️</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Kiểm Tra Chất Lượng</h3>
-                        <p class="text-gray-600 text-sm">Hệ thống kiểm soát chất lượng nghiêm ngặt ở mọi khâu sản xuất</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Kiểm Tra Chất Lượng</span>
+                            <span class="lang-zh">质量检测</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Hệ thống kiểm soát chất lượng nghiêm ngặt ở mọi khâu sản xuất</span>
+                            <span class="lang-zh">在生产各环节实施严格的质量控制系统</span>
+                        </p>
                     </div>
                 </div>
 
@@ -1170,8 +1851,14 @@
                         <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">👥</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Đội Ngũ Chuyên Nghiệp</h3>
-                        <p class="text-gray-600 text-sm">Hơn 500 nhân viên giàu kinh nghiệm và tận tâm với công việc</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Đội Ngũ Chuyên Nghiệp</span>
+                            <span class="lang-zh">专业团队</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Hơn 500 nhân viên giàu kinh nghiệm và tận tâm với công việc</span>
+                            <span class="lang-zh">超过500名经验丰富、敬业的员工</span>
+                        </p>
                     </div>
                 </div>
 
@@ -1180,12 +1867,50 @@
                         <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">📈</span>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-3">Năng Suất Cao</h3>
-                        <p class="text-gray-600 text-sm">Công suất sản xuất lớn, đáp ứng đơn hàng số lượng lớn</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-3">
+                            <span class="lang-vi">Năng Suất Cao</span>
+                            <span class="lang-zh">高产能</span>
+                        </h3>
+                        <p class="text-gray-600 text-sm">
+                            <span class="lang-vi">Công suất sản xuất lớn, đáp ứng đơn hàng số lượng lớn</span>
+                            <span class="lang-zh">大产能，满足大批量订单需求</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Thank You & Commitment for Why Choose Page -->
+        <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-yellow-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-yellow-100 to-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">💖</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Vượt Trội</span>
+                    <span class="lang-zh">卓越承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-yellow-400 to-amber-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        <strong>Thành Hạo</strong> không chỉ sản xuất gấu bông - chúng tôi tạo ra những kỷ niệm đẹp. 
+                        Với tất cả những lợi thế vượt trội, chúng tôi cam kết là lựa chọn tốt nhất 
+                        cho nhu cầu gấu bông chất lượng cao của bạn.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>不仅生产毛绒玩具——我们创造美好回忆。
+                        凭借所有卓越优势，我们承诺成为您高品质毛绒玩具需求的最佳选择。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-yellow-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">🏆</span>
+                    <span class="font-semibold text-yellow-800">
+                        <span class="lang-vi">Lựa chọn hoàn hảo - Chất lượng vượt trội</span>
+                        <span class="lang-zh">完美选择 - 卓越品质</span>
+                    </span>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- Certificates Page -->
@@ -1196,7 +1921,10 @@
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">📜</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Chứng Từ & Giấy Phép</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Chứng Từ & Giấy Phép</span>
+                    <span class="lang-zh">证书与许可证</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
@@ -1206,14 +1934,20 @@
                         <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">🏢</span>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Giấy Phép Kinh Doanh</h3>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                            <span class="lang-vi">Giấy Phép Kinh Doanh</span>
+                            <span class="lang-zh">营业执照</span>
+                        </h3>
                         <div class="w-12 h-1 bg-blue-400 mx-auto mb-4 rounded-full"></div>
                     </div>
                     <div class="mb-4">
                         <img src="https://i.postimg.cc/gk57VVW4/Screenshot-. .png" alt="Giấy phép kinh doanh" class="w-full h-auto rounded-lg shadow-sm border">
                     </div>
                     <div class="text-center">
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Còn hiệu lực</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            <span class="lang-vi">Còn hiệu lực</span>
+                            <span class="lang-zh">有效</span>
+                        </span>
                     </div>
                 </div>
 
@@ -1222,14 +1956,20 @@
                         <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <span class="text-2xl">💰</span>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Giấy Chứng Nhận Đầu Tư</h3>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                            <span class="lang-vi">Giấy Chứng Nhận Đầu Tư</span>
+                            <span class="lang-zh">投资证书</span>
+                        </h3>
                         <div class="w-12 h-1 bg-green-400 mx-auto mb-4 rounded-full"></div>
                     </div>
                     <div class="mb-4">
                         <img src="https://i.postimg.cc/PxspYF3h/Screenshot-. .png" alt="Giấy chứng nhận đầu tư" class="w-full h-auto rounded-lg shadow-sm border">
                     </div>
                     <div class="text-center">
-                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">Hoạt động</span>
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+                            <span class="lang-vi">Hoạt động</span>
+                            <span class="lang-zh">运营中</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -1247,12 +1987,51 @@
                 <div class="flex items-center justify-center">
                     <span class="text-3xl mr-4">✅</span>
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-1">Đầy Đủ Giấy Tờ Pháp Lý</h3>
-                        <p class="text-gray-600">Công ty hoạt động hoàn toàn hợp pháp và tuân thủ đầy đủ các quy định của pháp luật Việt Nam</p>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-1">
+                            <span class="lang-vi">Đầy Đủ Giấy Tờ Pháp Lý</span>
+                            <span class="lang-zh">完整法律文件</span>
+                        </h3>
+                        <p class="text-gray-600">
+                            <span class="lang-vi">Công ty hoạt động hoàn toàn hợp pháp và tuân thủ đầy đủ các quy định của pháp luật Việt Nam</span>
+                            <span class="lang-zh">公司完全合法经营，严格遵守越南法律法规</span>
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
+
+        <!-- Thank You & Commitment for Certificates Page -->
+        <div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-teal-200">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-gradient-to-br from-teal-100 to-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">📜</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Pháp Lý Minh Bạch</span>
+                    <span class="lang-zh">透明法律承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-teal-400 to-cyan-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        <strong>Thành Hạo</strong> hoạt động hoàn toàn minh bạch và tuân thủ đầy đủ pháp luật. 
+                        Chúng tôi cam kết cung cấp tất cả giấy tờ pháp lý cần thiết, 
+                        đảm bảo sự tin tưởng và an tâm cho đối tác.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>运营完全透明，严格遵守法律。
+                        我们承诺提供所有必要的法律文件，
+                        确保合作伙伴的信任和安心。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-teal-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">✅</span>
+                    <span class="font-semibold text-teal-800">
+                        <span class="lang-vi">Hoạt động hợp pháp - Minh bạch tuyệt đối</span>
+                        <span class="lang-zh">合法经营 - 绝对透明</span>
+                    </span>
+                </div>
+            </div>
+        </div>
         </div>
 
         <!-- Team Page -->
@@ -1263,12 +2042,18 @@
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
                     <span class="text-2xl">👥</span>
                 </div>
-                <h2 class="text-3xl font-bold text-gray-800">Đội Ngũ Của Chúng Tôi</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                    <span class="lang-vi">Đội Ngũ Của Chúng Tôi</span>
+                    <span class="lang-zh">我们的团队</span>
+                </h2>
             </div>
             <div class="section-divider mb-6"></div>
             
             <div class="text-center mb-8">
-                <p class="text-gray-600 text-lg">Đội ngũ lãnh đạo giàu kinh nghiệm và tận tâm</p>
+                <p class="text-gray-600 text-lg">
+                    <span class="lang-vi">Đội ngũ lãnh đạo giàu kinh nghiệm và tận tâm</span>
+                    <span class="lang-zh">经验丰富、敬业的领导团队</span>
+                </p>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1277,10 +2062,16 @@
                     <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-2xl">👨‍💼</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Tổng Giám Đốc</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="lang-vi">Tổng Giám Đốc</span>
+                        <span class="lang-zh">总经理</span>
+                    </h3>
                     <h4 class="text-xl font-bold text-blue-800 mb-3">Liu Gang</h4>
                     <div class="w-12 h-1 bg-blue-400 mx-auto mb-3 rounded-full"></div>
-                    <p class="text-gray-600 text-sm">Lãnh đạo tổng thể hoạt động công ty</p>
+                    <p class="text-gray-600 text-sm">
+                        <span class="lang-vi">Lãnh đạo tổng thể hoạt động công ty</span>
+                        <span class="lang-zh">领导公司整体运营</span>
+                    </p>
                 </div>
 
                 <!-- Giám Đốc Điều Hành -->
@@ -1288,10 +2079,16 @@
                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-2xl">👩‍💼</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Giám Đốc Điều Hành</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="lang-vi">Giám Đốc Điều Hành</span>
+                        <span class="lang-zh">运营总监</span>
+                    </h3>
                     <h4 class="text-xl font-bold text-green-800 mb-3">Yao Hong Yun</h4>
                     <div class="w-12 h-1 bg-green-400 mx-auto mb-3 rounded-full"></div>
-                    <p class="text-gray-600 text-sm">Điều hành hoạt động hàng ngày</p>
+                    <p class="text-gray-600 text-sm">
+                        <span class="lang-vi">Điều hành hoạt động hàng ngày</span>
+                        <span class="lang-zh">管理日常运营</span>
+                    </p>
                 </div>
 
                 <!-- Giám Đốc Sản Xuất -->
@@ -1299,10 +2096,16 @@
                     <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-2xl">👨‍🔧</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Giám Đốc Sản Xuất</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="lang-vi">Giám Đốc Sản Xuất</span>
+                        <span class="lang-zh">生产总监</span>
+                    </h3>
                     <h4 class="text-xl font-bold text-orange-800 mb-3">Li Geng Xin</h4>
                     <div class="w-12 h-1 bg-orange-400 mx-auto mb-3 rounded-full"></div>
-                    <p class="text-gray-600 text-sm">Quản lý quy trình sản xuất</p>
+                    <p class="text-gray-600 text-sm">
+                        <span class="lang-vi">Quản lý quy trình sản xuất</span>
+                        <span class="lang-zh">管理生产流程</span>
+                    </p>
                 </div>
 
                 <!-- Trưởng Phòng Nhân Sự -->
@@ -1310,514 +2113,184 @@
                     <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                         <span class="text-2xl">👩‍💻</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Trưởng Phòng Nhân Sự</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="lang-vi">Trưởng Phòng Nhân Sự</span>
+                        <span class="lang-zh">人事部经理</span>
+                    </h3>
                     <h4 class="text-xl font-bold text-purple-800 mb-3">Nguyễn Thị Hạnh</h4>
                     <div class="w-12 h-1 bg-purple-400 mx-auto mb-3 rounded-full"></div>
-                    <p class="text-gray-600 text-sm">Quản lý nguồn nhân lực</p>
+                    <p class="text-gray-600 text-sm">
+                        <span class="lang-vi">Quản lý nhân sự và tuyển dụng</span>
+                        <span class="lang-zh">管理人事和招聘</span>
+                    </p>
                 </div>
 
                 <!-- Trưởng Phòng Tài Vụ -->
                 <div class="bg-gradient-to-br from-teal-50 to-cyan-50 p-6 rounded-lg border border-teal-200 text-center">
                     <div class="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <span class="text-2xl">👩‍💰</span>
+                        <span class="text-2xl">💰</span>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-1">Trưởng Phòng Tài Vụ</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-1">
+                        <span class="lang-vi">Trưởng Phòng Tài Vụ</span>
+                        <span class="lang-zh">财务部经理</span>
+                    </h3>
                     <h4 class="text-xl font-bold text-teal-800 mb-3">Nguyễn Thị Kiều</h4>
                     <div class="w-12 h-1 bg-teal-400 mx-auto mb-3 rounded-full"></div>
-                    <p class="text-gray-600 text-sm">Quản lý tài chính kế toán</p>
-                </div>
-            </div>
-            
-            <div class="mt-8 bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-lg border border-gray-200">
-                <div class="text-center">
-                    <span class="text-3xl mb-2 block">🤝</span>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Đội Ngũ Chuyên Nghiệp</h3>
-                    <p class="text-gray-600">Với đội ngũ lãnh đạo giàu kinh nghiệm và tận tâm, chúng tôi cam kết mang đến dịch vụ tốt nhất cho khách hàng</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Information -->
-        <section id="contact" class="bg-white rounded-xl shadow-lg p-8 mb-8 print-section">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
-                    <span class="text-2xl">📞</span>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-800">Thông Tin Liên Hệ</h2>
-            </div>
-            <div class="section-divider mb-6"></div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Thông Tin Công Ty</h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
-                                <span class="text-lg">🏭</span>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800">Địa chỉ sản xuất:</p>
-                                <p class="text-gray-600">Thôn Quan, xã Tứ Kỳ, thành phố Hải Phòng, Việt Nam</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                <span class="text-lg">📱</span>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800">Điện thoại:</p>
-                                <p class="text-gray-600">091096358</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                <span class="text-lg">✉️</span>
-                            </div>
-                            <div>
-                                <p class="font-medium text-gray-800">Email:</p>
-                                <p class="text-gray-600">thanhhao9830@gmail.com</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Lãnh Đạo Công Ty</h3>
-                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
-                        <div class="text-center mb-4">
-                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <span class="text-2xl">👨‍💼</span>
-                            </div>
-                            <h4 class="text-lg font-bold text-gray-800">董事總經理 / M.D.</h4>
-                            <h5 class="text-xl font-bold text-blue-800 mb-3">劉鋼 / LIU GANG</h5>
-                            <div class="w-12 h-1 bg-blue-400 mx-auto mb-4 rounded-full"></div>
-                        </div>
-                        
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-center">
-                                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                                    <span class="text-sm">📱</span>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm text-gray-600">Mobile / 聯絡電話</p>
-                                    <p class="font-semibold text-gray-800">091096358</p>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center justify-center">
-                                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                                    <span class="text-sm">✉️</span>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-sm text-gray-600">E-mail / 電郵地址</p>
-                                    <p class="font-semibold text-gray-800">lg@zschdz.com</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Staff Contact Information -->
-            <div class="bg-gradient-to-r from-gray-50 to-blue-50 p-6 rounded-lg border border-gray-200">
-                <h3 class="text-xl font-semibold text-gray-800 mb-6 text-center">Nhân Viên Liên Hệ</h3>
-                
-                <!-- Mrs Linh - Trưởng phòng (Highlighted) -->
-                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-xl border-2 border-blue-300 shadow-lg mb-6">
-                    <div class="text-center">
-                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
-                            <span class="text-3xl">👩‍💻</span>
-                        </div>
-                        <div class="mb-4">
-                            <h4 class="text-2xl font-bold text-gray-800 mb-2">Mrs Linh</h4>
-                            <div class="inline-flex items-center bg-blue-100 px-4 py-2 rounded-full">
-                                <span class="text-lg mr-2">👑</span>
-                                <span class="text-blue-800 font-semibold">Trưởng phòng nhân sự</span>
-                            </div>
-                        </div>
-                        <div class="w-16 h-1 bg-blue-400 mx-auto mb-6 rounded-full"></div>
-                        <div class="bg-white p-4 rounded-lg shadow-sm border border-blue-100">
-                            <div class="flex items-center justify-center">
-                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                    <span class="text-lg">📱</span>
-                                </div>
-                                <div class="text-center">
-                                    <p class="text-gray-600 text-sm mb-1">Điện thoại liên hệ</p>
-                                    <p class="font-bold text-gray-800 text-2xl">0915.996.358</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Other Staff Members -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Miss Mai -->
-                    <div class="bg-gradient-to-br from-pink-50 to-rose-50 p-6 rounded-lg border border-pink-200">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                <span class="text-xl">👩‍💼</span>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-bold text-gray-800">Miss Mai</h4>
-                                <p class="text-gray-600">Hành chính nhân sự</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                                <span class="text-sm">📱</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Điện thoại:</p>
-                                <p class="font-bold text-gray-800 text-lg">0346.392.238</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Mrs Thùy -->
-                    <div class="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-lg border border-purple-200">
-                        <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4 flex-shrink-0">
-                                <span class="text-xl">👩‍💻</span>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-bold text-gray-800">Mrs Thùy</h4>
-                                <p class="text-gray-600">Hành chính nhân sự</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
-                                <span class="text-sm">📱</span>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Điện thoại:</p>
-                                <p class="font-bold text-gray-800 text-lg">0349.651.904</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        </div>
-
-        <!-- SEO Keywords Section (Hidden but searchable) -->
-        <section class="sr-only" aria-hidden="true">
-            <h2>Từ khóa tìm kiếm</h2>
-            <p>Công ty TNHH Thành Hạo, sản xuất gấu bông Hải Phòng, teddy bear manufacturer Vietnam, Liu Gang director, gấu bông chất lượng cao, plush toys factory, OEM manufacturing Vietnam, xuất khẩu gấu bông, Walmart supplier Vietnam, Disney partner Vietnam, Pop Mart manufacturer, gấu bông trẻ em an toàn, custom teddy bear Vietnam, nhà máy sản xuất đồ chơi, Hải Phòng manufacturing, Vietnam toy export, quality plush toys, 成豪有限公司, 毛绒玩具制造, 劉鋼總經理</p>
-        </section>
-
-
-
-        <!-- Thank You Message -->
-        <section class="bg-white rounded-xl shadow-lg p-8 print-section">
-            <div class="flex items-center mb-6">
-                <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center mr-4">
-                    <span class="text-2xl">💝</span>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-800">Lời Cảm Ơn</h2>
-            </div>
-            <div class="section-divider mb-6"></div>
-            
-            <!-- Main Thank You Message -->
-            <div class="bg-gradient-to-br from-orange-50 to-red-50 p-10 rounded-xl border border-orange-200 mb-8">
-                <div class="text-center">
-                    <span class="text-6xl mb-8 block">🙏</span>
-                    <h3 class="text-3xl font-bold text-gray-800 mb-6">
-                        Chúng tôi rất hân hạnh được phục vụ quý khách hàng!
-                    </h3>
-                    <div class="w-20 h-1 bg-orange-400 mx-auto mb-6 rounded-full"></div>
-                    <p class="text-gray-700 text-xl leading-relaxed max-w-2xl mx-auto mb-6">
-                        Nếu bạn có bất kỳ câu hỏi nào hoặc cần thêm thông tin, 
-                        vui lòng liên hệ với chúng tôi. Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ.
+                    <p class="text-gray-600 text-sm">
+                        <span class="lang-vi">Quản lý tài chính và kế toán</span>
+                        <span class="lang-zh">管理财务和会计</span>
                     </p>
                 </div>
             </div>
             
-            <!-- Company Promise -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-8 rounded-lg border border-blue-200 mb-8">
-                <div class="text-center">
-                    <span class="text-4xl mb-4 block">💝</span>
-                    <h4 class="text-xl font-bold text-gray-800 mb-4">Cam Kết Của Thành Hạo</h4>
-                    <p class="text-gray-700 font-medium text-lg max-w-xl mx-auto">
-                        <strong>Thành Hạo</strong> luôn sẵn sàng mang đến những sản phẩm gấu bông 
-                        tuyệt vời nhất cho bạn và gia đình. Chất lượng là ưu tiên hàng đầu của chúng tôi.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- Company Slogan -->
+
+        </section>
+
+        <!-- Thank You & Commitment for Team Page -->
+        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-6 sm:p-8 mb-8 border border-indigo-200">
             <div class="text-center">
-                <div class="inline-flex items-center space-x-4 bg-gradient-to-r from-orange-100 to-red-100 px-8 py-4 rounded-full border-2 border-orange-200 shadow-lg">
-                    <span class="text-3xl">🧸</span>
-                    <span class="font-bold text-orange-800 text-xl">Gấu bông chất lượng - Niềm vui trọn vẹn</span>
-                    <span class="text-3xl">🧸</span>
+                <div class="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <span class="text-3xl">👥</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Cam Kết Đội Ngũ Chuyên Nghiệp</span>
+                    <span class="lang-zh">专业团队承诺</span>
+                </h3>
+                <div class="w-12 h-1 bg-gradient-to-r from-indigo-400 to-purple-400 mx-auto mb-4 rounded-full"></div>
+                <p class="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed mb-4">
+                    <span class="lang-vi">
+                        Đội ngũ lãnh đạo và nhân viên của <strong>Thành Hạo</strong> luôn tận tâm và chuyên nghiệp. 
+                        Chúng tôi cam kết phát triển không ngừng, 
+                        mang đến dịch vụ tốt nhất cho khách hàng và đối tác.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>的领导团队和员工始终敬业专业。
+                        我们承诺不断发展，
+                        为客户和合作伙伴提供最佳服务。
+                    </span>
+                </p>
+                <div class="inline-flex items-center bg-indigo-100 px-4 py-2 rounded-full">
+                    <span class="text-2xl mr-2">🌟</span>
+                    <span class="font-semibold text-indigo-800">
+                        <span class="lang-vi">Đội ngũ tận tâm - Dịch vụ chuyên nghiệp</span>
+                        <span class="lang-zh">敬业团队 - 专业服务</span>
+                    </span>
                 </div>
             </div>
-        </section>
+        </div>
+        </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-8 sm:py-12 lg:py-16 print-section">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center">
-            <!-- Logo and Company Name -->
-            <div class="flex flex-col sm:flex-row items-center justify-center mb-6 sm:mb-8 space-y-3 sm:space-y-0">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 lg:w-18 lg:h-18 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center sm:mr-4 shadow-lg">
-                    <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 object-contain">
+    <!-- Thank You Section -->
+    <footer class="bg-gradient-to-br from-orange-50 to-red-50 border-t border-orange-200 mt-8">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12">
+            <!-- Thank You Message -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <span class="text-4xl">🙏</span>
                 </div>
-                <div>
-                    <span class="text-xl sm:text-2xl lg:text-3xl font-bold block">CÔNG TY TNHH THÀNH HẠO</span>
-                    <div class="w-16 h-1 bg-white bg-opacity-50 mx-auto sm:mx-0 mt-2 rounded-full"></div>
-                </div>
-            </div>
-            
-            <!-- Copyright and Description -->
-            <div class="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                <p class="text-blue-100 text-sm sm:text-base lg:text-lg font-medium">
-                    © 2025 Công ty TNHH Thành Hạo. Tất cả quyền được bảo lưu.
+                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
+                    <span class="lang-vi">Lời Cảm Ơn</span>
+                    <span class="lang-zh">感谢信</span>
+                </h2>
+                <div class="w-16 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto mb-6 rounded-full"></div>
+                <p class="text-lg sm:text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+                    <span class="lang-vi">
+                        <strong>Chúng tôi rất hân hạnh được phục vụ quý khách hàng!</strong><br>
+                        Nếu bạn có bất kỳ câu hỏi nào hoặc cần thêm thông tin, vui lòng liên hệ với chúng tôi. 
+                        Chúng tôi luôn sẵn sàng lắng nghe và hỗ trợ.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>我们很荣幸为您服务！</strong><br>
+                        如果您有任何问题或需要更多信息，请联系我们。
+                        我们随时准备倾听和支持。
+                    </span>
                 </p>
-                <p class="text-blue-200 text-xs sm:text-sm lg:text-base">
-                    🧸 Chuyên sản xuất gấu bông chất lượng cao - Hồ sơ năng lực cập nhật 07/2025
+            </div>
+
+            <!-- Commitment Section -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 mb-8 border border-gray-100">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-100 to-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                        <span class="text-3xl">💝</span>
+                    </div>
+                    <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-4">
+                        <span class="lang-vi">Cam Kết Của Thành Hạo</span>
+                        <span class="lang-zh">成豪的承诺</span>
+                    </h3>
+                    <div class="w-12 h-1 bg-gradient-to-r from-pink-400 to-rose-400 mx-auto mb-4 rounded-full"></div>
+                </div>
+                <p class="text-base sm:text-lg text-gray-700 text-center max-w-2xl mx-auto leading-relaxed">
+                    <span class="lang-vi">
+                        <strong>Thành Hạo</strong> luôn sẵn sàng mang đến những sản phẩm gấu bông tuyệt vời nhất cho bạn và gia đình. 
+                        <strong>Chất lượng là ưu tiên hàng đầu</strong> của chúng tôi.
+                    </span>
+                    <span class="lang-zh">
+                        <strong>成豪</strong>始终准备为您和您的家人提供最优质的毛绒玩具产品。
+                        <strong>质量是我们的首要任务</strong>。
+                    </span>
                 </p>
-                <div class="inline-flex items-center bg-white bg-opacity-10 px-4 py-2 rounded-full">
-                    <span class="text-blue-100 text-sm sm:text-base">📍 Hải Phòng, Việt Nam</span>
+            </div>
+
+            <!-- Slogan -->
+            <div class="text-center mb-8">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 sm:p-8 rounded-xl border border-blue-200 shadow-lg">
+                    <div class="flex items-center justify-center mb-4">
+                        <span class="text-3xl sm:text-4xl mr-3">🧸</span>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-800">
+                            <span class="lang-vi">Gấu bông chất lượng - Niềm vui trọn vẹn</span>
+                            <span class="lang-zh">优质毛绒玩具 - 完美快乐</span>
+                        </h3>
+                        <span class="text-3xl sm:text-4xl ml-3">🧸</span>
+                    </div>
                 </div>
             </div>
-            
-            <!-- Decorative Icons -->
-            <div class="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8 text-2xl sm:text-3xl lg:text-4xl mb-4">
-                <span class="hover:scale-110 transition-transform duration-300">🧸</span>
-                <span class="hover:scale-110 transition-transform duration-300">❤️</span>
-                <span class="hover:scale-110 transition-transform duration-300">🌟</span>
-                <span class="hover:scale-110 transition-transform duration-300">🎁</span>
-                <span class="hover:scale-110 transition-transform duration-300">😊</span>
-            </div>
-            
-            <!-- Contact Info -->
-            <div class="flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-6 text-blue-200 text-sm sm:text-base">
-                <div class="flex items-center">
-                    <span class="mr-2">📱</span>
-                    <span>091096358</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="mr-2">✉️</span>
-                    <span>thanhhao9830@gmail.com</span>
+
+            <!-- Company Footer -->
+            <div class="text-center border-t border-orange-200 pt-8">
+                <div class="bg-gradient-to-br from-white to-blue-50 p-6 sm:p-8 rounded-2xl border border-gray-200 shadow-xl">
+                    <div class="flex flex-col sm:flex-row items-center justify-center mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-red-100 rounded-2xl flex items-center justify-center mr-0 sm:mr-6 mb-4 sm:mb-0 shadow-lg">
+                            <img src="https://i.postimg.cc/bNg7j9yy/Screenshot-. .png" alt="Logo Thành Hạo" class="w-16 h-16 object-contain">
+                        </div>
+                        <div class="text-center sm:text-left">
+                            <h4 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+                                <span class="lang-vi">CÔNG TY TNHH THÀNH HẠO</span>
+                                <span class="lang-zh">成豪有限责任公司</span>
+                            </h4>
+                            <div class="w-16 h-1 bg-gradient-to-r from-orange-400 to-red-400 mx-auto sm:mx-0 mb-3 rounded-full"></div>
+                            <p class="text-gray-600 text-base sm:text-lg mb-3">
+                                <span class="lang-vi">© 2025 Công ty TNHH Thành Hạo. Tất cả quyền được bảo lưu.</span>
+                                <span class="lang-zh">© 2025 成豪有限责任公司。保留所有权利。</span>
+                            </p>
+                            <div class="flex flex-col sm:flex-row items-center justify-center sm:justify-start space-y-2 sm:space-y-0 sm:space-x-6">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-2">🧸</span>
+                                    <span class="text-sm sm:text-base text-gray-700 font-medium">
+                                        <span class="lang-vi">Chuyên sản xuất gấu bông chất lượng cao</span>
+                                        <span class="lang-zh">专业生产高品质毛绒玩具</span>
+                                    </span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xl mr-2">📍</span>
+                                    <span class="text-sm sm:text-base text-gray-700 font-medium">
+                                        <span class="lang-vi">Hải Phòng, Việt Nam</span>
+                                        <span class="lang-zh">越南海防</span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="mt-4 inline-flex items-center bg-blue-100 px-4 py-2 rounded-full">
+                                <span class="text-lg mr-2">📋</span>
+                                <span class="text-sm font-semibold text-blue-800">
+                                    <span class="lang-vi">Hồ sơ năng lực cập nhật 07/2025</span>
+                                    <span class="lang-zh">能力简介更新于2025年7月</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
-
-    <!-- Structured Data (JSON-LD) for Search Engines -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Công ty TNHH Thành Hạo",
-        "alternateName": ["Thành Hạo Company", "Thanh Hao Ltd", "成豪有限公司"],
-        "url": "https://thanhhao-teddybear.com",
-        "logo": "https://i.postimg.cc/bNg7j9yy/Screenshot-. .png",
-        "image": "https://i.postimg.cc/T1X041pL/Screenshot-. .png",
-        "description": "Công ty TNHH Thành Hạo chuyên sản xuất gấu bông chất lượng cao tại Hải Phòng, Việt Nam. Đối tác tin cậy của các thương hiệu quốc tế như Walmart, Disney, Pop Mart.",
-        "foundingDate": "2020",
-        "founder": {
-            "@type": "Person",
-            "name": "Liu Gang",
-            "jobTitle": "Tổng Giám Đốc"
-        },
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Thôn Quan, xã Tứ Kỳ",
-            "addressLocality": "Hải Phòng",
-            "addressCountry": "VN",
-            "addressRegion": "Hải Phòng"
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "20.8449",
-            "longitude": "106.6881"
-        },
-        "contactPoint": [
-            {
-                "@type": "ContactPoint",
-                "telephone": "091096358",
-                "contactType": "customer service",
-                "email": "thanhhao9830@gmail.com",
-                "availableLanguage": ["Vietnamese", "Chinese", "English"]
-            },
-            {
-                "@type": "ContactPoint",
-                "telephone": "+84-346392238",
-                "contactType": "sales",
-                "contactOption": "TollFree",
-                "areaServed": "VN",
-                "availableLanguage": "Vietnamese"
-            }
-        ],
-        "sameAs": [
-            "https://www.facebook.com/thanhhao.teddybear",
-            "https://www.linkedin.com/company/thanhhao-ltd"
-        ],
-        "industry": "Manufacturing",
-        "numberOfEmployees": "500-1000",
-        "knowsAbout": [
-            "Sản xuất gấu bông",
-            "Teddy Bear Manufacturing",
-            "Plush Toys Production",
-            "OEM Manufacturing",
-            "Quality Control",
-            "Export Manufacturing"
-        ],
-        "makesOffer": [
-            {
-                "@type": "Offer",
-                "itemOffered": {
-                    "@type": "Product",
-                    "name": "Gấu Bông Truyền Thống",
-                    "description": "Gấu bông mềm mại, an toàn cho trẻ em",
-                    "category": "Toys & Games"
-                }
-            },
-            {
-                "@type": "Offer",
-                "itemOffered": {
-                    "@type": "Product",
-                    "name": "Gấu Bông Đặc Biệt",
-                    "description": "Gấu bông theo yêu cầu, thiết kế riêng",
-                    "category": "Custom Toys"
-                }
-            }
-        ],
-        "hasCredential": [
-            {
-                "@type": "EducationalOccupationalCredential",
-                "name": "Giấy Phép Kinh Doanh",
-                "credentialCategory": "Business License"
-            },
-            {
-                "@type": "EducationalOccupationalCredential",
-                "name": "Giấy Chứng Nhận Đầu Tư",
-                "credentialCategory": "Investment Certificate"
-            }
-        ]
-    }
-    </script>
-
-    <!-- Local Business Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        "name": "Công ty TNHH Thành Hạo",
-        "image": "https://i.postimg.cc/T1X041pL/Screenshot-. .png",
-        "telephone": "091096358",
-        "email": "thanhhao9830@gmail.com",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "Thôn Quan, xã Tứ Kỳ",
-            "addressLocality": "Hải Phòng",
-            "addressCountry": "VN"
-        },
-        "geo": {
-            "@type": "GeoCoordinates",
-            "latitude": "20.8449",
-            "longitude": "106.6881"
-        },
-        "url": "https://thanhhao-teddybear.com",
-        "openingHours": "Mo-Sa 07:30-16:30",
-        "priceRange": "$$",
-        "paymentAccepted": ["Cash", "Credit Card", "Bank Transfer"],
-        "currenciesAccepted": "VND, USD, CNY"
-    }
-    </script>
-
-    <!-- Manufacturing Company Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Corporation",
-        "name": "Công ty TNHH Thành Hạo",
-        "legalName": "Công ty Trách Nhiệm Hữu Hạn Thành Hạo",
-        "url": "https://thanhhao-teddybear.com",
-        "logo": "https://i.postimg.cc/bNg7j9yy/Screenshot-. .png",
-        "foundingDate": "2020",
-        "foundingLocation": {
-            "@type": "Place",
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Hải Phòng",
-                "addressCountry": "VN"
-            }
-        },
-        "employee": [
-            {
-                "@type": "Person",
-                "name": "Liu Gang",
-                "jobTitle": "Tổng Giám Đốc",
-                "email": "thanhhao9830@gmail.com"
-            },
-            {
-                "@type": "Person",
-                "name": "Yao Hong Yun",
-                "jobTitle": "Giám Đốc Điều Hành"
-            }
-        ],
-        "parentOrganization": {
-            "@type": "Organization",
-            "name": "Thành Hạo Group"
-        }
-    }
-    </script>
-
-    <!-- Navigation JavaScript -->
-    <script>
-        // Page navigation function
-        function showPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page-section').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Remove active class from all nav items
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            // Show selected page
-            const targetPage = document.getElementById(pageId + '-page');
-            if (targetPage) {
-                targetPage.classList.add('active');
-            }
-            
-            // Add active class to clicked nav item
-            event.target.classList.add('active');
-            
-            // Scroll to top
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
-
-        // Hide/show taskbar on scroll
-        let lastScrollTop = 0;
-        const taskbar = document.getElementById('taskbar');
-        
-        window.addEventListener('scroll', function() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                // Scrolling down
-                taskbar.classList.add('hidden');
-            } else {
-                // Scrolling up
-                taskbar.classList.remove('hidden');
-            }
-            
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'968ac596758b04e7',t:'MTc1NDEwODMxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'969b249ed602e2eb',t:'MTc1NDI3OTk3Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
-
-
